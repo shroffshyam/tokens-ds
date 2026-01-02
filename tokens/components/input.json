@@ -3,29 +3,29 @@
     "component": {
       "input": {
         "background": {
-          "default": { "value": "{color.foundation.neutral.background.primary}" },
-          "disabled": { "value": "{color.foundation.neutral.background.tertiary}" },
-          "focus": { "value": "{color.foundation.neutral.background.primary}" }
+          "default": { "value": "{color.background.base}" },
+          "disabled": { "value": "{color.background.tertiary}" },
+          "focus": { "value": "{color.background.base}" }
         },
         "border": {
-          "default": { "value": "{color.foundation.neutral.border.default}" },
-          "focus": { "value": "{color.foundation.primary.base}" },
-          "error": { "value": "{color.foundation.semantic.error.base}" },
-          "disabled": { "value": "{color.foundation.neutral.border.light}" }
+          "default": { "value": "{color.border.default}" },
+          "focus": { "value": "{color.border.focus}" },
+          "error": { "value": "{color.border.error}" },
+          "disabled": { "value": "{color.border.light}" }
         },
         "text": {
-          "default": { "value": "{color.foundation.neutral.text.primary}" },
-          "placeholder": { "value": "{color.foundation.neutral.text.tertiary}" },
-          "disabled": { "value": "{color.foundation.neutral.text.disabled}" }
+          "default": { "value": "{color.text.primary}" },
+          "placeholder": { "value": "{color.text.tertiary}" },
+          "disabled": { "value": "{color.text.disabled}" }
         },
         "label": {
-          "default": { "value": "{color.foundation.neutral.text.secondary}" },
-          "focus": { "value": "{color.foundation.primary.base}" },
-          "error": { "value": "{color.foundation.semantic.error.base}" }
+          "default": { "value": "{color.text.secondary}" },
+          "focus": { "value": "{color.interactive.primary.default}" },
+          "error": { "value": "{color.semantic.error.default}" }
         },
         "helper": {
-          "default": { "value": "{color.foundation.neutral.text.tertiary}" },
-          "error": { "value": "{color.foundation.semantic.error.base}" }
+          "default": { "value": "{color.text.tertiary}" },
+          "error": { "value": "{color.semantic.error.default}" }
         }
       }
     }
@@ -34,8 +34,8 @@
     "component": {
       "input": {
         "padding": {
-          "horizontal": { "value": "{size.spacing.md}" },
-          "vertical": { "value": "{size.spacing.sm}" }
+          "horizontal": { "value": "{spacing.scale.md}" },
+          "vertical": { "value": "{spacing.scale.sm}" }
         },
         "height": {
           "sm": { "value": "32" },
@@ -46,7 +46,7 @@
           "default": { "value": "6" }
         },
         "gap": {
-          "default": { "value": "{size.spacing.xs}" }
+          "default": { "value": "{spacing.scale.xs}" }
         }
       }
     }
@@ -54,9 +54,9 @@
   "fontSize": {
     "component": {
       "input": {
-        "default": { "value": "{fontSize.foundation.base}" },
-        "label": { "value": "{fontSize.foundation.sm}" },
-        "helper": { "value": "{fontSize.foundation.xs}" }
+          "default": { "value": "{typography.size.base}" },
+          "label": { "value": "{typography.size.sm}" },
+          "helper": { "value": "{typography.size.xs}" }
       }
     }
   }

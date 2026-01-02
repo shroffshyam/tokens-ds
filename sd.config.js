@@ -18,14 +18,8 @@ StyleDictionary.registerFormat({
                      token.path[0] === 'lineHeight' ? 'line-height' :
                      token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
 
-      // Remove theme prefix from path for CSS variable name
-      let pathWithoutTheme;
-      if (token.path[0] === 'theme') {
-        // Theme tokens: theme.{themeName}.variant.{variantName}.* → color.foundation.*
-        pathWithoutTheme = ['color', 'foundation', ...token.path.slice(4)];
-      } else {
-        pathWithoutTheme = token.path;
-      }
+      // For semantic tokens, use the path as-is (no theme prefix removal needed)
+      const pathWithoutTheme = token.path;
 
       const name = pathWithoutTheme.slice(1).join('-');
       tokenMap.set(path, `--${prefix}-${name}`);
@@ -56,57 +50,34 @@ StyleDictionary.registerFormat({
       return aPath.localeCompare(bPath);
     });
 
-    // Separate foundation tokens by theme and variant
-    // Theme-Variant structure: theme.{themeName}.variant.{variantName}.*
+    // Each theme is self-contained with all its tokens
     const foundationClassicLight = tokens.filter(token =>
-      token.path[0] === 'theme' && token.path[1] === 'classic' &&
-      token.path[2] === 'variant' && token.path[3] === 'light'
-    );
+      token.filePath.includes('theme-classic-light.json')
+    ).sort((a, b) => {
+      const aPath = a.path.join('-');
+      const bPath = b.path.join('-');
+      return aPath.localeCompare(bPath);
+    });
 
     const foundationClassicDark = tokens.filter(token =>
-      token.path[0] === 'theme' && token.path[1] === 'classic' &&
-      token.path[2] === 'variant' && token.path[3] === 'dark'
-    );
+      token.filePath.includes('theme-classic-dark.json')
+    ).sort((a, b) => {
+      const aPath = a.path.join('-');
+      const bPath = b.path.join('-');
+      return aPath.localeCompare(bPath);
+    });
 
     const foundationAdvanceLight = tokens.filter(token =>
-      token.path[0] === 'theme' && token.path[1] === 'advance' &&
-      token.path[2] === 'variant' && token.path[3] === 'light'
-    );
+      token.filePath.includes('theme-advance-light.json')
+    ).sort((a, b) => {
+      const aPath = a.path.join('-');
+      const bPath = b.path.join('-');
+      return aPath.localeCompare(bPath);
+    });
 
     const foundationAdvanceDark = tokens.filter(token =>
-      token.path[0] === 'theme' && token.path[1] === 'advance' &&
-      token.path[2] === 'variant' && token.path[3] === 'dark'
-    );
-
-    // Common foundation tokens (spacing, typography - shared across themes)
-    const foundationCommon = tokens.filter(token =>
-      (token.path[0] === 'size' && token.path[1] === 'spacing') ||
-      (token.path[0] === 'fontSize' && token.path[1] === 'foundation') ||
-      (token.path[0] === 'fontWeight' && token.path[1] === 'foundation') ||
-      (token.path[0] === 'lineHeight' && token.path[1] === 'foundation') ||
-      (token.path[0] === 'fontFamily' && token.path[1] === 'foundation')
-    );
-
-    // Combine theme colors with common foundation tokens
-    const foundationClassicLightCombined = [...foundationClassicLight, ...foundationCommon].sort((a, b) => {
-      const aPath = a.path.join('-');
-      const bPath = b.path.join('-');
-      return aPath.localeCompare(bPath);
-    });
-
-    const foundationClassicDarkCombined = [...foundationClassicDark, ...foundationCommon].sort((a, b) => {
-      const aPath = a.path.join('-');
-      const bPath = b.path.join('-');
-      return aPath.localeCompare(bPath);
-    });
-
-    const foundationAdvanceLightCombined = [...foundationAdvanceLight, ...foundationCommon].sort((a, b) => {
-      const aPath = a.path.join('-');
-      const bPath = b.path.join('-');
-      return aPath.localeCompare(bPath);
-    });
-
-    const foundationAdvanceDarkCombined = [...foundationAdvanceDark, ...foundationCommon].sort((a, b) => {
+      token.filePath.includes('theme-advance-dark.json')
+    ).sort((a, b) => {
       const aPath = a.path.join('-');
       const bPath = b.path.join('-');
       return aPath.localeCompare(bPath);
@@ -133,7 +104,7 @@ StyleDictionary.registerFormat({
     output.push(' * https://spectrum.adobe.com/page/design-tokens/');
     output.push(' *');
     output.push(' * Theme Support: Use data-theme="classic-light", "classic-dark", "advance-light", "advance-dark" on html/body');
-    output.push(' * Architecture: theme.{themeName}.variant.{variantName}.* structure');
+    output.push(' * Architecture: Semantic tokens with theme overrides');
     output.push(' * Default theme is classic-light. Classic=Traditional, Advance=Modern design approaches');
     output.push(' */');
     output.push('');
@@ -157,7 +128,7 @@ StyleDictionary.registerFormat({
     output.push('');
 
     // Classic Light Theme (default)
-    if (foundationClassicLightCombined.length > 0) {
+    if (foundationClassicLight.length > 0) {
       output.push('[data-theme="classic-light"],');
       output.push(':root {');
       output.push('  /* ============================================');
@@ -166,17 +137,26 @@ StyleDictionary.registerFormat({
       output.push('   * ============================================ */');
       output.push('');
 
-      foundationClassicLightCombined.forEach(token => {
-        const prefix = token.path[0] === 'theme' ? 'color' :
-                       token.path[0] === 'size' ? 'size' :
-                       token.path[0] === 'fontSize' ? 'font-size' :
-                       token.path[0] === 'fontWeight' ? 'font-weight' :
-                       token.path[0] === 'lineHeight' ? 'line-height' :
-                       token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
+      foundationClassicLight.forEach(token => {
+        let prefix = token.path[0] === 'theme' ? 'color' :
+                     token.path[0] === 'size' ? 'size' :
+                     token.path[0] === 'fontSize' ? 'font-size' :
+                     token.path[0] === 'fontWeight' ? 'font-weight' :
+                     token.path[0] === 'lineHeight' ? 'line-height' :
+                     token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
+
         // For theme tokens: theme.classic.variant.light.* → foundation.*
-        const pathWithoutTheme = (token.path[0] === 'theme')
+        let pathWithoutTheme = (token.path[0] === 'theme')
           ? ['color', 'foundation', ...token.path.slice(4)]
           : token.path;
+
+        // Handle component overrides (they use 'component' prefix)
+        if (token.path[0] === 'component') {
+          prefix = 'color'; // Component overrides are color-related
+          // For component overrides, treat as ['color', 'component', ...] for consistent naming
+          pathWithoutTheme = ['color'].concat(token.path);
+        }
+
         const name = pathWithoutTheme.slice(1).join('-');
         const value = getReferenceValue(token);
         const comment = token.comment ? ` /* ${token.comment} */` : '';
@@ -188,7 +168,7 @@ StyleDictionary.registerFormat({
     }
 
     // Classic Dark Theme
-    if (foundationClassicDarkCombined.length > 0) {
+    if (foundationClassicDark.length > 0) {
       output.push('[data-theme="classic-dark"] {');
       output.push('  /* ============================================');
       output.push('   * Foundation Tokens - Classic Dark Theme');
@@ -196,17 +176,13 @@ StyleDictionary.registerFormat({
       output.push('   * ============================================ */');
       output.push('');
 
-      foundationClassicDarkCombined.forEach(token => {
+      foundationClassicDark.forEach(token => {
         const prefix = token.path[0] === 'theme' ? 'color' :
                        token.path[0] === 'size' ? 'size' :
                        token.path[0] === 'fontSize' ? 'font-size' :
                        token.path[0] === 'fontWeight' ? 'font-weight' :
                        token.path[0] === 'lineHeight' ? 'line-height' :
                        token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
-        // For theme tokens: theme.classic.variant.dark.* → foundation.*
-        const pathWithoutTheme = (token.path[0] === 'theme')
-          ? ['color', 'foundation', ...token.path.slice(4)]
-          : token.path;
         const name = pathWithoutTheme.slice(1).join('-');
         const value = getReferenceValue(token);
         const comment = token.comment ? ` /* ${token.comment} */` : '';
@@ -226,17 +202,26 @@ StyleDictionary.registerFormat({
       output.push('   * ============================================ */');
       output.push('');
 
-      foundationAdvanceLightCombined.forEach(token => {
-        const prefix = token.path[0] === 'theme' ? 'color' :
-                       token.path[0] === 'size' ? 'size' :
-                       token.path[0] === 'fontSize' ? 'font-size' :
-                       token.path[0] === 'fontWeight' ? 'font-weight' :
-                       token.path[0] === 'lineHeight' ? 'line-height' :
-                       token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
+      foundationAdvanceLight.forEach(token => {
+        let prefix = token.path[0] === 'theme' ? 'color' :
+                     token.path[0] === 'size' ? 'size' :
+                     token.path[0] === 'fontSize' ? 'font-size' :
+                     token.path[0] === 'fontWeight' ? 'font-weight' :
+                     token.path[0] === 'lineHeight' ? 'line-height' :
+                     token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
+
         // For theme tokens: theme.advance.variant.light.* → foundation.*
-        const pathWithoutTheme = (token.path[0] === 'theme')
+        let pathWithoutTheme = (token.path[0] === 'theme')
           ? ['color', 'foundation', ...token.path.slice(4)]
           : token.path;
+
+        // Handle component overrides (they use 'component' prefix)
+        if (token.path[0] === 'component') {
+          prefix = 'color'; // Component overrides are color-related
+          // For component overrides, treat as ['color', 'component', ...] for consistent naming
+          pathWithoutTheme = ['color'].concat(token.path);
+        }
+
         const name = pathWithoutTheme.slice(1).join('-');
         const value = getReferenceValue(token);
         const comment = token.comment ? ` /* ${token.comment} */` : '';
@@ -248,7 +233,7 @@ StyleDictionary.registerFormat({
     }
 
     // Advance Dark Theme
-    if (foundationAdvanceDarkCombined.length > 0) {
+    if (foundationAdvanceDark.length > 0) {
       output.push('[data-theme="advance-dark"] {');
       output.push('  /* ============================================');
       output.push('   * Foundation Tokens - Advance Dark Theme');
@@ -256,17 +241,26 @@ StyleDictionary.registerFormat({
       output.push('   * ============================================ */');
       output.push('');
 
-      foundationAdvanceDarkCombined.forEach(token => {
-        const prefix = token.path[0] === 'theme' ? 'color' :
-                       token.path[0] === 'size' ? 'size' :
-                       token.path[0] === 'fontSize' ? 'font-size' :
-                       token.path[0] === 'fontWeight' ? 'font-weight' :
-                       token.path[0] === 'lineHeight' ? 'line-height' :
-                       token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
+      foundationAdvanceDark.forEach(token => {
+        let prefix = token.path[0] === 'theme' ? 'color' :
+                     token.path[0] === 'size' ? 'size' :
+                     token.path[0] === 'fontSize' ? 'font-size' :
+                     token.path[0] === 'fontWeight' ? 'font-weight' :
+                     token.path[0] === 'lineHeight' ? 'line-height' :
+                     token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
+
         // For theme tokens: theme.advance.variant.dark.* → foundation.*
-        const pathWithoutTheme = (token.path[0] === 'theme')
+        let pathWithoutTheme = (token.path[0] === 'theme')
           ? ['color', 'foundation', ...token.path.slice(4)]
           : token.path;
+
+        // Handle component overrides (they use 'component' prefix)
+        if (token.path[0] === 'component') {
+          prefix = 'color'; // Component overrides are color-related
+          // For component overrides, treat as ['color', 'component', ...] for consistent naming
+          pathWithoutTheme = ['color'].concat(token.path);
+        }
+
         const name = pathWithoutTheme.slice(1).join('-');
         const value = getReferenceValue(token);
         const comment = token.comment ? ` /* ${token.comment} */` : '';

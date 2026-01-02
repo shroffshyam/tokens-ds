@@ -1,30 +1,60 @@
 # Theme Support Guide
 
-This design system supports both **light** and **dark** themes following Adobe Spectrum Design Token Standards.
+This design system supports **semantic tokens** with complete theme definitions and component overrides, following Adobe Spectrum Design Token Standards.
 
 ## 🎨 Theme Architecture
 
-The token system uses a **Theme-Variant structure** with two distinct themes, each having light and dark variants:
+The token system uses a **semantic token architecture** with complete theme definitions that include component-specific overrides:
 
 ### Theme Structure
 
 1. **Classic Theme** (Traditional design approach):
-   - **Classic Light**: `tokens/foundation/colors-classic-light.json`
-   - **Classic Dark**: `tokens/foundation/colors-classic-dark.json`
+   - **Classic Light**: `tokens/foundation/theme-classic-light.json` - Complete semantic theme
+   - **Classic Dark**: `tokens/foundation/theme-classic-dark.json` - Complete semantic theme
 
 2. **Advance Theme** (Modern design approach):
-   - **Advance Light**: `tokens/foundation/colors-advance-light.json`
-   - **Advance Dark**: `tokens/foundation/colors-advance-dark.json`
+   - **Advance Light**: `tokens/foundation/theme-advance-light.json` - Complete semantic theme
+   - **Advance Dark**: `tokens/foundation/theme-advance-dark.json` - Complete semantic theme
 
-### Why Theme-Variant Architecture?
+### Semantic Categories
+Each theme file contains complete semantic token definitions:
+- **Colors**: `color.background.*`, `color.text.*`, `color.interactive.*`, `color.semantic.*`
+- **Spacing**: `spacing.component.*`, `spacing.layout.*`, `spacing.scale.*`
+- **Typography**: `typography.family.*`, `typography.size.*`, `typography.weight.*`
+- **Borders**: `border.width.*`, `border.radius.*`
+- **Shadows**: `shadow.elevation.*`, `shadow.color.*`
 
+### Component Overrides
+Themes can include component-specific overrides for exceptions where specific components need different values than foundation semantic tokens:
+
+```json
+{
+  "component": {
+    "button": {
+      "primary": {
+        "background": {
+          "hover": { "value": "{color.rawColors.blue.300}" }
+        }
+      }
+    }
+  }
+}
+```
+
+**CSS Cascade**: Component overrides in theme selectors take precedence over default component tokens, enabling theme-specific component customization.
+
+### Why Semantic Theme Architecture?
+
+- **Complete Themes**: Each theme file contains all semantic tokens (colors, spacing, typography, etc.)
+- **Component Overrides**: Theme-specific exceptions for brand or UX requirements
 - **Design Approaches**: Different themes represent different design philosophies (Classic vs Advance)
 - **Brightness Variants**: Each theme has consistent light/dark variants
-- **Scalability**: Easy to add more themes (e.g., Minimal, Bold) or variants (e.g., sepia, high-contrast)
-- **Semantic Clarity**: Clear distinction between theme identity and brightness preference
-- **Maintainability**: Each theme can evolve independently while maintaining variant consistency
+- **Scalability**: Easy to add more themes or variants with full semantic coverage
+- **Semantic Clarity**: Industry-standard naming with clear token purposes
+- **Maintainability**: Themes evolve independently while maintaining semantic consistency
+- **Exception Handling**: Component overrides provide flexibility without breaking semantic structure
 
-Foundation tokens are theme-specific, while component tokens automatically adapt to the active theme.
+Foundation tokens are theme-complete, and component tokens automatically adapt to the active theme with theme-specific overrides taking precedence.
 
 ## 🌐 Web Usage
 

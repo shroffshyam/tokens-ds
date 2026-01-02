@@ -4,40 +4,40 @@
       "button": {
         "primary": {
           "background": {
-            "default": { "value": "{color.foundation.primary.base}" },
-            "hover": { "value": "{color.foundation.primary.dark}" },
-            "active": { "value": "{color.foundation.primary.darker}" },
-            "disabled": { "value": "{color.foundation.neutral.border.dark}" }
+            "default": { "value": "{color.interactive.primary.default}" },
+            "hover": { "value": "{color.interactive.primary.hover}" },
+            "active": { "value": "{color.interactive.primary.active}" },
+            "disabled": { "value": "{color.border.default}" }
           },
           "text": {
-            "default": { "value": "{color.foundation.neutral.text.inverse}" },
-            "disabled": { "value": "{color.foundation.neutral.text.disabled}" }
+            "default": { "value": "{color.text.inverse}" },
+            "disabled": { "value": "{color.text.disabled}" }
           },
           "border": {
-            "default": { "value": "{color.foundation.primary.base}" },
-            "disabled": { "value": "{color.foundation.neutral.border.dark}" }
+            "default": { "value": "{color.interactive.primary.default}" },
+            "disabled": { "value": "{color.border.default}" }
           }
         },
         "secondary": {
           "background": {
-            "default": { "value": "{color.foundation.secondary.base}" },
-            "hover": { "value": "{color.foundation.secondary.dark}" }
+            "default": { "value": "{color.interactive.secondary.default}" },
+            "hover": { "value": "{color.interactive.secondary.hover}" }
           },
           "text": {
-            "default": { "value": "{color.foundation.neutral.text.inverse}" }
+            "default": { "value": "{color.text.inverse}" }
           }
         },
         "outline": {
           "background": {
             "default": { "value": "transparent" },
-            "hover": { "value": "{color.foundation.primary.lighter}" }
+            "hover": { "value": "{color.interactive.outline.hover}" }
           },
           "text": {
-            "default": { "value": "{color.foundation.primary.base}" },
-            "hover": { "value": "{color.foundation.primary.dark}" }
+            "default": { "value": "{color.interactive.primary.default}" },
+            "hover": { "value": "{color.interactive.primary.hover}" }
           },
           "border": {
-            "default": { "value": "{color.foundation.primary.base}" }
+            "default": { "value": "{color.interactive.primary.default}" }
           }
         }
       }
@@ -48,14 +48,14 @@
       "button": {
         "padding": {
           "horizontal": {
-            "sm": { "value": "{size.spacing.sm}" },
-            "md": { "value": "{size.spacing.md}" },
-            "lg": { "value": "{size.spacing.lg}" }
+            "sm": { "value": "{spacing.scale.lg}" },
+            "md": { "value": "{spacing.scale.xl}" },
+            "lg": { "value": "{spacing.scale.2xl}" }
           },
           "vertical": {
-            "sm": { "value": "{size.spacing.xs}" },
-            "md": { "value": "{size.spacing.sm}" },
-            "lg": { "value": "{size.spacing.md}" }
+            "sm": { "value": "{spacing.scale.sm}" },
+            "md": { "value": "{spacing.scale.md}" },
+            "lg": { "value": "{spacing.scale.lg}" }
           }
         },
         "height": {
@@ -74,16 +74,16 @@
   "fontSize": {
     "component": {
       "button": {
-        "sm": { "value": "{fontSize.foundation.sm}" },
-        "md": { "value": "{fontSize.foundation.base}" },
-        "lg": { "value": "{fontSize.foundation.lg}" }
+        "sm": { "value": "{typography.size.sm}" },
+        "md": { "value": "{typography.size.base}" },
+        "lg": { "value": "{typography.size.lg}" }
       }
     }
   },
   "fontWeight": {
     "component": {
       "button": {
-        "default": { "value": "{fontWeight.foundation.medium}" }
+        "default": { "value": "{typography.weight.medium}" }
       }
     }
   }

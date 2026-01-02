@@ -3,17 +3,17 @@
     "component": {
       "card": {
         "background": {
-          "default": { "value": "{color.foundation.neutral.background.primary}" },
-          "elevated": { "value": "{color.foundation.neutral.background.secondary}" }
+          "default": { "value": "{color.background.base}" },
+          "elevated": { "value": "{color.background.elevated}" }
         },
         "border": {
-          "default": { "value": "{color.foundation.neutral.border.default}" },
-          "light": { "value": "{color.foundation.neutral.border.light}" }
+          "default": { "value": "{color.border.default}" },
+          "light": { "value": "{color.border.light}" }
         },
         "shadow": {
-          "sm": { "value": "rgba(0, 0, 0, 0.05)" },
-          "md": { "value": "rgba(0, 0, 0, 0.1)" },
-          "lg": { "value": "rgba(0, 0, 0, 0.15)" }
+          "sm": { "value": "{shadow.elevation.sm}" },
+          "md": { "value": "{shadow.elevation.md}" },
+          "lg": { "value": "{shadow.elevation.lg}" }
         }
       }
     }
@@ -22,17 +22,17 @@
     "component": {
       "card": {
         "padding": {
-          "sm": { "value": "{size.spacing.sm}" },
-          "md": { "value": "{size.spacing.md}" },
-          "lg": { "value": "{size.spacing.lg}" }
+          "sm": { "value": "{spacing.scale.md}" },
+          "md": { "value": "{spacing.scale.lg}" },
+          "lg": { "value": "{spacing.scale.xl}" }
         },
         "borderRadius": {
-          "sm": { "value": "4" },
-          "md": { "value": "8" },
-          "lg": { "value": "12" }
+          "sm": { "value": "{border.radius.sm}" },
+          "md": { "value": "{border.radius.md}" },
+          "lg": { "value": "{border.radius.lg}" }
         },
         "gap": {
-          "default": { "value": "{size.spacing.md}" }
+          "default": { "value": "{spacing.scale.md}" }
         }
       }
     }

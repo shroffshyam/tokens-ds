@@ -4,6 +4,8 @@ A scalable, cross-platform design system tokens project built with [Style Dictio
 
 **✨ Features:**
 - **Hierarchical Token Structure**: Raw Colors → Foundation → Components with CSS variable references
+- **Semantic Token Architecture**: Industry-standard semantic naming with complete theme definitions
+- **Component Override System**: Theme-specific component exceptions for brand customization
 - **Theme-Variant Architecture**: Classic and Advance themes, each with light and dark variants
 - **Cross-Platform Generation**: Web (CSS), iOS (Swift), Android (XML) outputs
 - **Interactive Token Explorer**: Visual exploration of token relationships and hierarchies
@@ -21,18 +23,20 @@ The token system follows a three-tier hierarchy that ensures consistency and mai
    - Color scales (50-900) for systematic color variations
 
 2. **Foundation Tokens** (`tokens/foundation/`)
-   - Core design system tokens that reference raw colors
-   - **Theme Architecture**: Theme-Variant structure with two distinct themes
+   - Core design system tokens using semantic naming
+   - **Theme Architecture**: Complete theme definitions with semantic tokens
      - **Classic Theme**: Traditional design approach
-       - `colors-classic-light.json` (light variant)
-       - `colors-classic-dark.json` (dark variant)
+       - `theme-classic-light.json` (light variant - complete theme)
+       - `theme-classic-dark.json` (dark variant - complete theme)
      - **Advance Theme**: Modern design approach
-       - `colors-advance-light.json` (light variant)
-       - `colors-advance-dark.json` (dark variant)
-   - Includes:
-     - **Colors**: Primary, secondary, semantic (success, error, warning, info), and neutral colors
-     - **Spacing**: Base spacing scale (xs, sm, md, lg, xl, 2xl, 3xl, 4xl)
-     - **Typography**: Font sizes, font families, font weights, and line heights
+       - `theme-advance-light.json` (light variant - complete theme)
+       - `theme-advance-dark.json` (dark variant - complete theme)
+   - **Semantic Categories**:
+     - `color.*`: Background, text, border, interactive, semantic colors
+     - `spacing.*`: Component and layout spacing scales
+     - `typography.*`: Font families, sizes, weights, line heights
+     - `border.*`: Border widths and border radius
+     - `shadow.*`: Elevation and shadow definitions
 
 3. **Component Tokens** (`tokens/components/`)
    - Component-specific tokens that reference foundation tokens
@@ -51,13 +55,10 @@ tokens-ds/
 │   ├── color/
 │   │   └── rawColors.json      # All raw color definitions
 │   ├── foundation/
-│   │   ├── colors-classic-light.json    # Classic theme, light variant
-│   │   ├── colors-classic-dark.json     # Classic theme, dark variant
-│   │   ├── colors-advance-light.json    # Advance theme, light variant
-│   │   ├── colors-advance-dark.json     # Advance theme, dark variant
-│   │   ├── colors-foundation.json       # Foundation color interface (theme-agnostic)
-│   │   ├── spacing.json                 # Theme-agnostic spacing tokens
-│   │   └── typography.json              # Theme-agnostic typography tokens
+│   │   ├── theme-classic-light.json      # Complete Classic light theme (semantic tokens)
+│   │   ├── theme-classic-dark.json      # Complete Classic dark theme (semantic tokens)
+│   │   ├── theme-advance-light.json     # Complete Advance light theme (semantic tokens)
+│   │   └── theme-advance-dark.json      # Complete Advance dark theme (semantic tokens)
 │   └── components/
 │       ├── button.json         # Button component tokens
 │       ├── card.json           # Card component tokens
@@ -184,13 +185,41 @@ The explorer automatically loads your generated tokens and provides an intuitive
       - Advance Dark: Applied to `[data-theme="advance-dark"]`
   - **Component Tokens**: Component-specific tokens that reference foundation tokens using CSS variables (e.g., `--color-component-button-primary-background-default: var(--color-foundation-primary-base)`)
 
-  **Theme Architecture**: Theme-Variant structure where themes represent different design approaches and variants represent brightness levels within each theme.
+  **Theme Architecture**: Complete theme definitions with semantic tokens and component overrides.
 
-  This hierarchical structure ensures that:
+  #### **Semantic Token Categories**
+  - `color.*`: Background, text, border, interactive, semantic colors
+  - `spacing.*`: Component and layout spacing scales
+  - `typography.*`: Font families, sizes, weights, line heights
+  - `border.*`: Border widths and border radius
+  - `shadow.*`: Elevation and shadow definitions
+
+  #### **Component Overrides**
+  Themes can include component-specific overrides to handle exceptions where specific components need different values than the foundation semantic tokens:
+
+  ```json
+  // Example: Advance theme button hover uses raw color instead of foundation
+  {
+    "component": {
+      "button": {
+        "primary": {
+          "background": {
+            "hover": { "value": "{color.rawColors.blue.300}" }
+          }
+        }
+      }
+    }
+  }
+  ```
+
+  **CSS Cascade Behavior**: Component overrides in theme selectors take precedence over default component tokens, enabling theme-specific component customization while maintaining semantic consistency.
+
+  This architecture ensures that:
   - Changes to raw colors automatically propagate through foundation and component tokens
   - The token hierarchy is maintained and clearly visible in the output
   - Tokens follow industry-standard naming conventions
   - **Theme Support**: Use `data-theme="classic-light"`, `data-theme="classic-dark"`, `data-theme="advance-light"`, or `data-theme="advance-dark"` on HTML element to switch themes
+  - **Exception Handling**: Component-specific overrides allow themes to deviate from foundation tokens when needed
   
 - **JSON** (`build/web/tokens.json`): Nested JSON format for JavaScript applications
 
@@ -233,7 +262,7 @@ Tokens can reference other tokens using the `{token.path}` syntax:
       "button": {
         "primary": {
           "background": {
-            "default": { "value": "{color.foundation.primary.base}" }
+            "default": { "value": "{color.interactive.primary.default}" }
           }
         }
       }
@@ -241,6 +270,27 @@ Tokens can reference other tokens using the `{token.path}` syntax:
   }
 }
 ```
+
+### Component Overrides for Theme Exceptions
+
+Themes can include component-specific overrides to handle cases where specific components need different values than the foundation semantic tokens:
+
+```json
+// Advance theme: Button hover uses raw color instead of foundation token
+{
+  "component": {
+    "button": {
+      "primary": {
+        "background": {
+          "hover": { "value": "{color.rawColors.blue.300}" }
+        }
+      }
+    }
+  }
+}
+```
+
+**CSS Behavior**: Component overrides generate CSS variables in theme selectors that take precedence over default component tokens, enabling theme-specific component customization while maintaining semantic consistency.
 
 ## 🔧 Customization
 

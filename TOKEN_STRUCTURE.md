@@ -7,38 +7,56 @@
 ```
 rawColors (All Colors)
     ↓
-foundation (Core Design System)
-├── theme.classic.variant.* (Classic Theme: light/dark color variants)
-├── theme.advance.variant.* (Advance Theme: light/dark color variants)
-├── color.foundation.* (Foundation color interface)
-├── size.spacing.* (Shared spacing scale)
-├── fontSize.foundation.* (Shared typography scale)
-├── fontWeight.foundation.* (Shared font weights)
-├── lineHeight.foundation.* (Shared line heights)
-└── fontFamily.foundation.* (Shared font families)
+foundation (Complete Theme Definitions)
+├── theme-classic-light.json (Complete Classic Light Theme)
+├── theme-classic-dark.json (Complete Classic Dark Theme)
+├── theme-advance-light.json (Complete Advance Light Theme)
+└── theme-advance-dark.json (Complete Advance Dark Theme)
     ↓
-components (UI Components - Theme-aware)
+components (UI Components - Reference semantic tokens)
 ```
 
-### Theme Architecture
+### Semantic Token Architecture
 
-The token system uses a **hybrid Theme-Variant structure**:
+Each theme file contains complete semantic token definitions:
 
-- **Theme-Specific Colors** (unique per theme):
-  - **Classic Theme**: Traditional color palette
-    - `theme.classic.variant.light.*`
-    - `theme.classic.variant.dark.*`
-  - **Advance Theme**: Modern color palette
-    - `theme.advance.variant.light.*`
-    - `theme.advance.variant.dark.*`
+- **Colors**: `color.background.*`, `color.text.*`, `color.interactive.*`, `color.semantic.*`
+- **Spacing**: `spacing.component.*`, `spacing.layout.*`, `spacing.scale.*`
+- **Typography**: `typography.family.*`, `typography.size.*`, `typography.weight.*`
+- **Borders**: `border.width.*`, `border.radius.*`
+- **Shadows**: `shadow.elevation.*`, `shadow.color.*`
 
-- **Shared Design Tokens** (consistent across themes):
-  - `color.foundation.*`: Interface for component references
-  - `size.spacing.*`: Universal spacing scale
-  - `fontSize.foundation.*`: Universal typography scale
-  - `fontWeight.foundation.*`: Universal font weights
-  - `lineHeight.foundation.*`: Universal line heights
-  - `fontFamily.foundation.*`: Universal font families
+### Component Overrides
+
+Themes can include component-specific overrides to handle exceptions where specific components need different values than the foundation semantic tokens:
+
+```json
+// Example: Advance theme button hover uses raw color instead of foundation
+{
+  "component": {
+    "button": {
+      "primary": {
+        "background": {
+          "hover": { "value": "{color.rawColors.blue.300}" }
+        }
+      }
+    }
+  }
+}
+```
+
+**CSS Behavior**: Component overrides generate CSS variables in theme selectors that take precedence over default component tokens, enabling theme-specific customization while maintaining semantic consistency.
+
+### Theme Differences
+
+- **Classic Theme**: Traditional, conservative design
+  - Smaller spacing scale, standard typography weights
+  - Traditional color relationships
+
+- **Advance Theme**: Modern, spacious design
+  - Larger spacing scale, extended typography weights
+  - Contemporary color relationships and larger border radius
+  - Component overrides for specific UX requirements (e.g., custom button hover colors)
 
 ### Token Path Examples
 
