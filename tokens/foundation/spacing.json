@@ -1,0 +1,17 @@
+{
+  "size": {
+    "spacing": {
+      "base": { "value": "4", "comment": "Base spacing unit (4px)" },
+      "xs": { "value": "{size.spacing.base}", "comment": "Extra small spacing (4px)" },
+      "sm": { "value": "8", "comment": "Small spacing (8px)" },
+      "md": { "value": "16", "comment": "Medium spacing (16px)" },
+      "lg": { "value": "24", "comment": "Large spacing (24px)" },
+      "xl": { "value": "32", "comment": "Extra large spacing (32px)" },
+      "2xl": { "value": "48", "comment": "2X large spacing (48px)" },
+      "3xl": { "value": "64", "comment": "3X large spacing (64px)" },
+      "4xl": { "value": "96", "comment": "4X large spacing (96px)" },
+      "none": { "value": "0", "comment": "No spacing" }
+    }
+  }
+}
+

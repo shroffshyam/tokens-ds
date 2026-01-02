@@ -1,0 +1,64 @@
+{
+  "color": {
+    "component": {
+      "input": {
+        "background": {
+          "default": { "value": "{color.foundation.light.neutral.background.primary}" },
+          "disabled": { "value": "{color.foundation.light.neutral.background.tertiary}" },
+          "focus": { "value": "{color.foundation.light.neutral.background.primary}" }
+        },
+        "border": {
+          "default": { "value": "{color.foundation.light.neutral.border.default}" },
+          "focus": { "value": "{color.foundation.light.primary.base}" },
+          "error": { "value": "{color.foundation.light.semantic.error.base}" },
+          "disabled": { "value": "{color.foundation.light.neutral.border.light}" }
+        },
+        "text": {
+          "default": { "value": "{color.foundation.light.neutral.text.primary}" },
+          "placeholder": { "value": "{color.foundation.light.neutral.text.tertiary}" },
+          "disabled": { "value": "{color.foundation.light.neutral.text.disabled}" }
+        },
+        "label": {
+          "default": { "value": "{color.foundation.light.neutral.text.secondary}" },
+          "focus": { "value": "{color.foundation.light.primary.base}" },
+          "error": { "value": "{color.foundation.light.semantic.error.base}" }
+        },
+        "helper": {
+          "default": { "value": "{color.foundation.light.neutral.text.tertiary}" },
+          "error": { "value": "{color.foundation.light.semantic.error.base}" }
+        }
+      }
+    }
+  },
+  "size": {
+    "component": {
+      "input": {
+        "padding": {
+          "horizontal": { "value": "{size.spacing.md}" },
+          "vertical": { "value": "{size.spacing.sm}" }
+        },
+        "height": {
+          "sm": { "value": "32" },
+          "md": { "value": "40" },
+          "lg": { "value": "48" }
+        },
+        "borderRadius": {
+          "default": { "value": "6" }
+        },
+        "gap": {
+          "default": { "value": "{size.spacing.xs}" }
+        }
+      }
+    }
+  },
+  "fontSize": {
+    "component": {
+      "input": {
+        "default": { "value": "{fontSize.foundation.base}" },
+        "label": { "value": "{fontSize.foundation.sm}" },
+        "helper": { "value": "{fontSize.foundation.xs}" }
+      }
+    }
+  }
+}
+

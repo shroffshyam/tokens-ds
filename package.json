@@ -1,0 +1,23 @@
+{
+  "name": "tokens-ds",
+  "version": "1.0.0",
+  "description": "Scalable cross-platform design system tokens using Style Dictionary",
+  "main": "index.js",
+  "scripts": {
+    "build": "style-dictionary build --config sd.config.js",
+    "build:clean": "rm -rf build && style-dictionary build --config sd.config.js",
+    "watch": "style-dictionary build --watch --config sd.config.js"
+  },
+  "keywords": [
+    "design-tokens",
+    "style-dictionary",
+    "design-system",
+    "cross-platform"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "style-dictionary": "^3.9.0"
+  }
+}
+

@@ -1,0 +1,68 @@
+{
+  "color": {
+    "component": {
+      "text": {
+        "heading": {
+          "primary": { "value": "{color.foundation.light.neutral.text.primary}" },
+          "secondary": { "value": "{color.foundation.light.neutral.text.secondary}" }
+        },
+        "body": {
+          "primary": { "value": "{color.foundation.light.neutral.text.primary}" },
+          "secondary": { "value": "{color.foundation.light.neutral.text.secondary}" },
+          "tertiary": { "value": "{color.foundation.light.neutral.text.tertiary}" }
+        },
+        "link": {
+          "default": { "value": "{color.foundation.light.primary.base}" },
+          "hover": { "value": "{color.foundation.light.primary.dark}" },
+          "visited": { "value": "{color.foundation.light.primary.darker}" }
+        }
+      }
+    }
+  },
+  "fontSize": {
+    "component": {
+      "text": {
+        "heading": {
+          "h1": { "value": "{fontSize.foundation.4xl}" },
+          "h2": { "value": "{fontSize.foundation.3xl}" },
+          "h3": { "value": "{fontSize.foundation.2xl}" },
+          "h4": { "value": "{fontSize.foundation.xl}" },
+          "h5": { "value": "{fontSize.foundation.lg}" },
+          "h6": { "value": "{fontSize.foundation.base}" }
+        },
+        "body": {
+          "default": { "value": "{fontSize.foundation.base}" },
+          "small": { "value": "{fontSize.foundation.sm}" },
+          "large": { "value": "{fontSize.foundation.lg}" }
+        }
+      }
+    }
+  },
+  "fontWeight": {
+    "component": {
+      "text": {
+        "heading": {
+          "default": { "value": "{fontWeight.foundation.bold}" },
+          "light": { "value": "{fontWeight.foundation.semibold}" }
+        },
+        "body": {
+          "default": { "value": "{fontWeight.foundation.normal}" },
+          "medium": { "value": "{fontWeight.foundation.medium}" }
+        }
+      }
+    }
+  },
+  "lineHeight": {
+    "component": {
+      "text": {
+        "heading": {
+          "default": { "value": "{lineHeight.foundation.tight}" }
+        },
+        "body": {
+          "default": { "value": "{lineHeight.foundation.normal}" }
+        }
+      }
+    }
+  }
+}
+

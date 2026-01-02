@@ -1,0 +1,85 @@
+{
+  "source": [
+    "tokens/**/*.json"
+  ],
+  "platforms": {
+    "web": {
+      "transformGroup": "css",
+      "buildPath": "build/web/",
+      "files": [
+        {
+          "destination": "tokens.css",
+          "format": "css/variables"
+        },
+        {
+          "destination": "tokens.json",
+          "format": "json/nested"
+        }
+      ]
+    },
+    "ios": {
+      "transformGroup": "ios",
+      "buildPath": "build/ios/",
+      "files": [
+        {
+          "destination": "StyleDictionary.swift",
+          "format": "ios-swift/class.swift",
+          "className": "StyleDictionary"
+        },
+        {
+          "destination": "StyleDictionaryColor.swift",
+          "format": "ios-swift/enum.swift",
+          "className": "StyleDictionaryColor",
+          "filter": {
+            "attributes": {
+              "category": "color"
+            }
+          }
+        }
+      ]
+    },
+    "android": {
+      "transformGroup": "android",
+      "buildPath": "build/android/",
+      "files": [
+        {
+          "destination": "colors.xml",
+          "format": "android/colors",
+          "filter": {
+            "attributes": {
+              "category": "color"
+            }
+          }
+        },
+        {
+          "destination": "dimens.xml",
+          "format": "android/dimens",
+          "filter": {
+            "attributes": {
+              "category": "size"
+            }
+          }
+        },
+        {
+          "destination": "font_dimens.xml",
+          "format": "android/fontDimens",
+          "filter": {
+            "attributes": {
+              "category": "fontSize"
+            }
+          }
+        },
+        {
+          "destination": "strings.xml",
+          "format": "android/strings",
+          "filter": {
+            "attributes": {
+              "category": "content"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+

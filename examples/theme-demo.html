@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Tokens - Theme Demo</title>
+  <link rel="stylesheet" href="../build/web/tokens.css">
+  <style>
+    body {
+      font-family: var(--font-family-foundation-sans);
+      margin: 0;
+      padding: var(--size-spacing-lg);
+      background: var(--color-foundation-neutral-background-primary);
+      color: var(--color-foundation-neutral-text-primary);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: var(--size-spacing-md);
+      right: var(--size-spacing-md);
+      padding: var(--size-spacing-sm) var(--size-spacing-md);
+      background: var(--color-component-button-primary-background-default);
+      color: var(--color-component-button-primary-text-default);
+      border: none;
+      border-radius: var(--size-component-button-borderRadius-md);
+      cursor: pointer;
+      font-size: var(--font-size-component-button-md);
+      font-weight: var(--font-weight-component-button-default);
+    }
+
+    .theme-toggle:hover {
+      background: var(--color-component-button-primary-background-hover);
+    }
+
+    h1 {
+      font-size: var(--font-size-component-text-heading-h1);
+      font-weight: var(--font-weight-component-text-heading-default);
+      color: var(--color-component-text-heading-primary);
+      margin-bottom: var(--size-spacing-lg);
+    }
+
+    .card {
+      background: var(--color-component-card-background-default);
+      border: 1px solid var(--color-component-card-border-default);
+      border-radius: var(--size-component-card-borderRadius-md);
+      padding: var(--size-component-card-padding-md);
+      margin-bottom: var(--size-spacing-md);
+    }
+
+    .button {
+      display: inline-block;
+      padding: var(--size-component-button-padding-vertical-md) var(--size-component-button-padding-horizontal-md);
+      background: var(--color-component-button-primary-background-default);
+      color: var(--color-component-button-primary-text-default);
+      border: 1px solid var(--color-component-button-primary-border-default);
+      border-radius: var(--size-component-button-borderRadius-md);
+      font-size: var(--font-size-component-button-md);
+      font-weight: var(--font-weight-component-button-default);
+      cursor: pointer;
+      margin-right: var(--size-spacing-sm);
+      margin-bottom: var(--size-spacing-sm);
+      transition: background-color 0.2s ease;
+    }
+
+    .button:hover {
+      background: var(--color-component-button-primary-background-hover);
+    }
+
+    .button:active {
+      background: var(--color-component-button-primary-background-active);
+    }
+
+    .button:disabled {
+      background: var(--color-component-button-primary-background-disabled);
+      color: var(--color-component-button-primary-text-disabled);
+      cursor: not-allowed;
+    }
+
+    .input {
+      width: 100%;
+      padding: var(--size-component-input-padding-vertical) var(--size-component-input-padding-horizontal);
+      background: var(--color-component-input-background-default);
+      border: 1px solid var(--color-component-input-border-default);
+      border-radius: var(--size-component-input-borderRadius-default);
+      color: var(--color-component-input-text-default);
+      font-size: var(--font-size-component-input-default);
+      margin-bottom: var(--size-spacing-md);
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--color-component-input-border-focus);
+    }
+
+    .text-primary {
+      color: var(--color-component-text-body-primary);
+    }
+
+    .text-secondary {
+      color: var(--color-component-text-body-secondary);
+    }
+
+    .text-link {
+      color: var(--color-component-text-link-default);
+      text-decoration: none;
+    }
+
+    .text-link:hover {
+      color: var(--color-component-text-link-hover);
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+  
+  <div class="container">
+    <h1>Design Tokens Theme Demo</h1>
+    
+    <div class="card">
+      <h2 style="font-size: var(--font-size-component-text-heading-h2);">Buttons</h2>
+      <button class="button">Primary Button</button>
+      <button class="button" disabled>Disabled Button</button>
+      <p class="text-secondary">Buttons automatically adapt to the current theme.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size: var(--font-size-component-text-heading-h2);">Input Fields</h2>
+      <input type="text" class="input" placeholder="Enter text here...">
+      <p class="text-secondary">Input fields use theme-aware colors.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size: var(--font-size-component-text-heading-h2);">Typography</h2>
+      <p class="text-primary">This is primary text that adapts to the theme.</p>
+      <p class="text-secondary">This is secondary text.</p>
+      <p><a href="#" class="text-link">This is a link</a> that changes color on hover.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size: var(--font-size-component-text-heading-h2);">Foundation Tokens</h2>
+      <p class="text-primary">Foundation tokens are theme-specific:</p>
+      <ul>
+        <li>Primary: <span style="color: var(--color-foundation-primary-base);">var(--color-foundation-primary-base)</span></li>
+        <li>Background: <span style="background: var(--color-foundation-neutral-background-primary); padding: 2px 4px;">var(--color-foundation-neutral-background-primary)</span></li>
+        <li>Text: <span style="color: var(--color-foundation-neutral-text-primary);">var(--color-foundation-neutral-text-primary)</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      
+      // Store preference
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Load saved theme preference
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,41 @@
+{
+  "color": {
+    "component": {
+      "card": {
+        "background": {
+          "default": { "value": "{color.foundation.light.neutral.background.primary}" },
+          "elevated": { "value": "{color.foundation.light.neutral.background.secondary}" }
+        },
+        "border": {
+          "default": { "value": "{color.foundation.light.neutral.border.default}" },
+          "light": { "value": "{color.foundation.light.neutral.border.light}" }
+        },
+        "shadow": {
+          "sm": { "value": "rgba(0, 0, 0, 0.05)" },
+          "md": { "value": "rgba(0, 0, 0, 0.1)" },
+          "lg": { "value": "rgba(0, 0, 0, 0.15)" }
+        }
+      }
+    }
+  },
+  "size": {
+    "component": {
+      "card": {
+        "padding": {
+          "sm": { "value": "{size.spacing.sm}" },
+          "md": { "value": "{size.spacing.md}" },
+          "lg": { "value": "{size.spacing.lg}" }
+        },
+        "borderRadius": {
+          "sm": { "value": "4" },
+          "md": { "value": "8" },
+          "lg": { "value": "12" }
+        },
+        "gap": {
+          "default": { "value": "{size.spacing.md}" }
+        }
+      }
+    }
+  }
+}
+
