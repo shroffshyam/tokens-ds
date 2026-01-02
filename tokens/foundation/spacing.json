@@ -1,0 +1,44 @@
+{
+  "spacing": {
+    "component": {
+      "button": {
+        "padding-x": { "value": "{spacing.scale.md}" },
+        "padding-y": { "value": "{spacing.scale.sm}" },
+        "gap": { "value": "{spacing.scale.sm}" }
+      },
+      "input": {
+        "padding-x": { "value": "{spacing.scale.md}" },
+        "padding-y": { "value": "{spacing.scale.sm}" },
+        "gap": { "value": "{spacing.scale.sm}" }
+      },
+      "card": {
+        "padding": { "value": "{spacing.scale.lg}" },
+        "gap": { "value": "{spacing.scale.md}" }
+      }
+    },
+    "layout": {
+      "page": {
+        "padding": { "value": "{spacing.scale.xl}" },
+        "margin": { "value": "{spacing.scale.lg}" }
+      },
+      "section": {
+        "margin-bottom": { "value": "{spacing.scale.xl}" },
+        "gap": { "value": "{spacing.scale.lg}" }
+      },
+      "container": {
+        "max-width": { "value": "1200px" },
+        "padding": { "value": "{spacing.scale.lg}" }
+      }
+    },
+    "scale": {
+      "xs": { "value": "4px" },
+      "sm": { "value": "8px" },
+      "md": { "value": "16px" },
+      "lg": { "value": "24px" },
+      "xl": { "value": "32px" },
+      "2xl": { "value": "48px" },
+      "3xl": { "value": "64px" },
+      "4xl": { "value": "96px" }
+    }
+  }
+}
