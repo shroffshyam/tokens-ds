@@ -24,9 +24,8 @@ class TokenExplorerApp {
             this.uiManager.init();
             this.uiManager.populateFilters();
 
-            // Render initial content
-            this.renderer.renderComponentTokens();
-            this.renderer.renderFoundationTokens(this.dataService.getFoundationTokens());
+            // Render initial content (overview tab)
+            this.renderer.renderOverview();
 
             console.log('Token Explorer initialized successfully');
         } catch (error) {

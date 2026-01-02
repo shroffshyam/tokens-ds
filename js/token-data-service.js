@@ -21,7 +21,7 @@ class TokenDataService {
             }
 
             this.tokens = await response.json();
-            this.processTokens();
+            await this.processTokens();
         } catch (error) {
             console.error('Error loading tokens:', error);
             throw error;
@@ -31,28 +31,93 @@ class TokenDataService {
     /**
      * Process loaded tokens into component and foundation arrays
      */
-    processTokens() {
-        this.processComponentTokens();
+    async processTokens() {
+        await this.processComponentTokens();
         this.processFoundationTokens();
     }
 
     /**
      * Process component tokens
      */
-    processComponentTokens() {
+    async processComponentTokens() {
         this.componentTokens = [];
 
-        const components = this.tokens?.color?.component || {};
+        // Load component token files directly to get original references
+        const componentFiles = [
+            'tokens/components/button.json',
+            'tokens/components/card.json',
+            'tokens/components/input.json',
+            'tokens/components/typography.json'
+        ];
 
-        Object.keys(components).forEach(componentName => {
-            const componentData = components[componentName];
-            const tokens = TokenUtils.flattenTokens(componentData, componentName);
+        for (const filePath of componentFiles) {
+            try {
+                const response = await fetch(filePath);
+                if (response.ok) {
+                    const componentData = await response.json();
+                    const componentName = filePath.split('/').pop().replace('.json', '');
+                    const tokens = this.extractOriginalComponentTokens(componentData, componentName);
 
-            this.componentTokens.push({
-                name: componentName,
-                tokens: tokens
+                    if (tokens.length > 0) {
+                        this.componentTokens.push({
+                            name: componentName,
+                            tokens: tokens
+                        });
+                    }
+                }
+            } catch (error) {
+                console.warn(`Could not load component file ${filePath}:`, error);
+            }
+        }
+
+        // Fallback: use processed tokens if direct loading fails
+        if (this.componentTokens.length === 0) {
+            const components = this.tokens?.color?.component || {};
+            Object.keys(components).forEach(componentName => {
+                const componentData = components[componentName];
+                const tokens = TokenUtils.flattenTokens(componentData, componentName);
+                this.componentTokens.push({
+                    name: componentName,
+                    tokens: tokens
+                });
             });
-        });
+        }
+    }
+
+    /**
+     * Extract original component tokens with references intact
+     * @param {Object} componentData - Raw component data from JSON file
+     * @param {string} componentName - Name of the component
+     * @returns {Array} Array of token objects with original references
+     */
+    extractOriginalComponentTokens(componentData, componentName) {
+        const tokens = [];
+
+        const flattenObject = (obj, path = []) => {
+            Object.keys(obj).forEach(key => {
+                const currentPath = [...path, key];
+                const value = obj[key];
+
+                if (value && typeof value === 'object') {
+                    if (value.value !== undefined) {
+                        // This is a token definition
+                        tokens.push({
+                            name: `color.component.${componentName}.${currentPath.slice(1).join('.')}`,
+                            value: value.value, // Original reference like {color.interactive.primary.default}
+                            originalValue: value.value,
+                            path: `color.component.${componentName}.${currentPath.slice(1).join('.')}`,
+                            type: 'component'
+                        });
+                    } else {
+                        // Continue recursing
+                        flattenObject(value, currentPath);
+                    }
+                }
+            });
+        };
+
+        flattenObject(componentData);
+        return tokens;
     }
 
     /**
@@ -139,5 +204,64 @@ class TokenDataService {
     getThemes() {
         const themes = new Set(this.foundationTokens.map(token => token.theme));
         return Array.from(themes).sort();
+    }
+
+    /**
+     * Get color tokens
+     * @returns {Array} Color tokens
+     */
+    getColorTokens() {
+        return this.foundationTokens.filter(token =>
+            token.path.startsWith('color.') &&
+            !token.path.includes('component')
+        );
+    }
+
+    /**
+     * Get spacing tokens
+     * @returns {Array} Spacing tokens
+     */
+    getSpacingTokens() {
+        return this.foundationTokens.filter(token =>
+            token.path.startsWith('spacing.')
+        );
+    }
+
+    /**
+     * Get typography tokens
+     * @returns {Array} Typography tokens
+     */
+    getTypographyTokens() {
+        return this.foundationTokens.filter(token =>
+            token.path.startsWith('typography.')
+        );
+    }
+
+    /**
+     * Get stats about tokens
+     * @returns {Object} Stats object
+     */
+    getStats() {
+        return {
+            total: this.foundationTokens.length + this.componentTokens.reduce((sum, comp) => sum + comp.tokens.length, 0),
+            colors: this.getColorTokens().length,
+            components: this.componentTokens.length,
+            spacing: this.getSpacingTokens().length,
+            typography: this.getTypographyTokens().length
+        };
+    }
+
+    /**
+     * Get recent tokens (for overview)
+     * @returns {Array} Recent tokens
+     */
+    getRecentTokens() {
+        // Return first 6 tokens from each category for demo
+        const recent = [];
+        const colors = this.getColorTokens().slice(0, 2);
+        const spacing = this.getSpacingTokens().slice(0, 2);
+        const typography = this.getTypographyTokens().slice(0, 2);
+
+        return [...colors, ...spacing, ...typography];
     }
 }

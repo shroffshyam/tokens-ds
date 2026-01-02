@@ -12,17 +12,505 @@
         .header { text-align: center; margin-bottom: 64px; padding-bottom: 24px; border-bottom: 1px solid #e0e0e0; }
         .header h1 { font-size: 36px; font-weight: bold; margin-bottom: 16px; }
         .header p { font-size: 18px; color: #616161; }
-        .tabs { display: flex; margin-bottom: 32px; border-bottom: 1px solid #e0e0e0; }
-        .tab { padding: 16px 28px; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-size: 18px; font-weight: 500; }
-        .tab.active { border-bottom-color: #2196f3; color: #2196f3; }
+        .tabs { display: flex; margin-bottom: 32px; border-bottom: 1px solid var(--color-border-default); flex-wrap: wrap; gap: 4px; }
+        .tab { padding: 12px 20px; background: var(--color-background-secondary); border: 1px solid var(--color-border-light); border-bottom: none; border-radius: var(--border-radius-md) var(--border-radius-md) 0 0; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--color-text-secondary); transition: all 0.2s ease; position: relative; top: 1px; }
+        .tab:hover { color: var(--color-text-primary); background: var(--color-background-tertiary); }
+        .tab.active { background: var(--color-background-base); border-color: var(--color-border-default); color: var(--color-text-primary); border-bottom: 1px solid var(--color-background-base); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .component-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; margin-bottom: 64px; }
-        .component-card { background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 24px; }
+        .search-container { margin-bottom: 24px; display: flex; gap: 16px; align-items: center; }
+        .search-input { flex: 1; padding: 12px 16px; border: 1px solid var(--color-border-default); border-radius: var(--border-radius-md); font-size: 16px; background: var(--color-background-base); color: var(--color-text-primary); }
+        .search-input:focus { outline: none; border-color: var(--color-border-focus); box-shadow: 0 0 0 3px var(--color-interactive-outline-hover); }
+        .clear-search { padding: 12px 16px; background: var(--color-interactive-secondary-default); color: var(--color-text-inverse); border: none; border-radius: var(--border-radius-md); cursor: pointer; font-size: 14px; }
+        .clear-search:hover { background: var(--color-interactive-secondary-hover); }
+
+        .component-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 48px; }
+        .component-card { background: var(--color-background-base); border: 1px solid var(--color-border-default); border-radius: var(--border-radius-md); padding: 24px; transition: all 0.2s ease; }
+        .component-card:hover { box-shadow: var(--shadow-elevation-md); border-color: var(--color-border-light); }
         .component-name { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
-        .token-item { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; padding: 12px; background: #f5f5f5; border-radius: 6px; }
-        .token-color { width: 16px; height: 16px; border-radius: 2px; border: 1px solid #e0e0e0; }
-        .token-name { font-weight: 500; }
+        .token-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 8px; padding: 16px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); border: 1px solid var(--color-border-light); transition: all 0.2s ease; }
+        .token-item:hover { background: var(--color-background-tertiary); border-color: var(--color-border-default); }
+        .token-info { display: flex; align-items: center; gap: 16px; flex: 1; }
+        .token-color { width: 32px; height: 32px; border-radius: var(--border-radius-sm); border: 1px solid var(--color-border-default); box-shadow: var(--shadow-elevation-sm); }
+        .token-details { flex: 1; }
+        .token-name { font-weight: 600; font-size: 14px; color: var(--color-text-primary); margin-bottom: 4px; }
+        .token-value { font-family: var(--typography-family-mono); font-size: 12px; color: var(--color-text-tertiary); background: var(--color-background-base); padding: 2px 6px; border-radius: var(--border-radius-sm); border: 1px solid var(--color-border-light); }
+        .token-actions { display: flex; gap: 8px; }
+        .copy-btn { padding: 6px 12px; background: var(--color-interactive-primary-default); color: var(--color-text-inverse); border: none; border-radius: var(--border-radius-sm); cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.2s ease; }
+        .copy-btn:hover { background: var(--color-interactive-primary-hover); }
+        .copy-btn.copied { background: var(--color-semantic-success-default); }
+        .copy-btn.copied::after { content: '✓'; margin-left: 4px; }
+
+        .stats-section { margin-bottom: 48px; }
+        .section-title { font-size: 28px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 32px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 48px; }
+        .stat-card { background: var(--color-background-base); border: 1px solid var(--color-border-default); border-radius: var(--border-radius-lg); padding: 24px; text-align: center; }
+        .stat-card h3 { font-size: 16px; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 48px; font-weight: 700; color: var(--color-interactive-primary-default); margin-bottom: 8px; }
+        .stat-description { font-size: 14px; color: var(--color-text-tertiary); }
+
+        .hierarchy-flow { display: flex; align-items: center; justify-content: center; gap: 32px; margin: 48px 0; flex-wrap: wrap; }
+        .hierarchy-node { background: var(--color-background-base); border: 2px solid var(--color-border-default); border-radius: var(--border-radius-lg); padding: 24px; text-align: center; min-width: 150px; }
+        .hierarchy-node h3 { font-size: 18px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 8px; }
+        .hierarchy-node p { font-size: 14px; color: var(--color-text-secondary); }
+        .hierarchy-arrow { font-size: 24px; color: var(--color-text-tertiary); font-weight: bold; }
+
+        .recent-section { margin-top: 48px; }
+        .recent-section h3 { font-size: 24px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 24px; }
+        .recent-tokens { display: grid; gap: 12px; }
+
+        .color-grid, .spacing-grid, .typography-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+        .relationship-graph { background: var(--color-background-secondary); border: 1px solid var(--color-border-default); border-radius: var(--border-radius-lg); padding: 24px; min-height: 400px; }
+
+        /* Card styles for different token types */
+        .color-card, .spacing-card, .typography-card {
+            background: var(--color-background-base);
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .color-card:hover, .spacing-card:hover, .typography-card:hover {
+            box-shadow: var(--shadow-elevation-md);
+            border-color: var(--color-border-light);
+        }
+
+        .color-preview-large {
+            width: 100%;
+            height: 80px;
+            border-radius: var(--border-radius-md);
+            border: 2px solid var(--color-border-default);
+            box-shadow: var(--shadow-elevation-sm);
+        }
+
+        .color-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .color-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .color-value {
+            font-family: var(--typography-family-mono);
+            font-size: 12px;
+            color: var(--color-text-tertiary);
+            background: var(--color-background-secondary);
+            padding: 4px 8px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--color-border-light);
+        }
+
+        .spacing-visual {
+            background: var(--color-interactive-primary-default);
+            border-radius: var(--border-radius-sm);
+            margin: 0 auto;
+            box-shadow: var(--shadow-elevation-sm);
+        }
+
+        .typography-preview {
+            font-size: 18px;
+            line-height: 1.4;
+            color: var(--color-text-primary);
+            background: var(--color-background-secondary);
+            padding: 16px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--color-border-light);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .typography-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .no-results {
+            text-align: center;
+            color: var(--color-text-tertiary);
+            font-style: italic;
+            padding: 40px;
+            grid-column: 1 / -1;
+        }
+
+        /* Component Table Styles */
+        .component-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--color-background-base);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-elevation-sm);
+        }
+
+        .component-table th {
+            background: var(--color-background-secondary);
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--color-border-default);
+        }
+
+        .component-row {
+            border-bottom: 1px solid var(--color-border-light);
+            transition: all 0.2s ease;
+        }
+
+        .component-row:hover {
+            background: var(--color-background-secondary);
+        }
+
+        .component-row td {
+            padding: 20px;
+            vertical-align: top;
+        }
+
+        .component-name-cell {
+            min-width: 200px;
+        }
+
+        .component-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 4px;
+        }
+
+        .token-count {
+            font-size: 12px;
+            color: var(--color-text-tertiary);
+            background: var(--color-background-tertiary);
+            padding: 2px 8px;
+            border-radius: var(--border-radius-sm);
+            display: inline-block;
+        }
+
+        .tokens-cell, .dependencies-cell {
+            min-width: 250px;
+        }
+
+        .token-list-compact, .dependency-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .token-chip, .dependency-chip {
+            background: var(--color-background-tertiary);
+            color: var(--color-text-secondary);
+            padding: 4px 8px;
+            border-radius: var(--border-radius-sm);
+            font-size: 12px;
+            font-family: var(--typography-family-mono);
+            border: 1px solid var(--color-border-light);
+        }
+
+        .token-chip:hover, .dependency-chip:hover {
+            background: var(--color-interactive-primary-default);
+            color: var(--color-text-inverse);
+            border-color: var(--color-interactive-primary-default);
+        }
+
+        .token-chip.more, .dependency-chip.more {
+            background: var(--color-background-secondary);
+            color: var(--color-text-tertiary);
+            font-style: italic;
+        }
+
+        /* Detailed Token Display */
+        .token-list-detailed {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .token-item-detailed {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--color-background-secondary);
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--color-border-light);
+            font-size: 13px;
+        }
+
+        .token-item-detailed:hover {
+            background: var(--color-background-tertiary);
+            border-color: var(--color-border-default);
+        }
+
+        .token-color-small {
+            width: 16px;
+            height: 16px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--color-border-default);
+            flex-shrink: 0;
+        }
+
+        .token-color-tiny {
+            width: 12px;
+            height: 12px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--color-border-default);
+            flex-shrink: 0;
+        }
+
+        .token-name-code {
+            background: var(--color-background-base);
+            padding: 2px 6px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--color-border-default);
+            font-family: var(--typography-family-mono);
+            font-size: 12px;
+            color: var(--color-text-primary);
+            font-weight: 500;
+        }
+
+        .token-value-text {
+            color: var(--color-text-secondary);
+            font-family: var(--typography-family-mono);
+            font-size: 12px;
+            flex: 1;
+        }
+
+        .copy-btn-small {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px;
+            border-radius: var(--border-radius-sm);
+            color: var(--color-text-tertiary);
+            font-size: 12px;
+            transition: all 0.2s ease;
+            opacity: 0.6;
+        }
+
+        .copy-btn-small:hover {
+            opacity: 1;
+            background: var(--color-background-tertiary);
+        }
+
+        /* Relationship Visualization Styles */
+        .relationship-visualization {
+            max-width: 100%;
+        }
+
+        .relationship-header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .relationship-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+        }
+
+        .relationship-header p {
+            color: var(--color-text-secondary);
+            font-size: 16px;
+        }
+
+        .relationship-list {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .relationship-item {
+            background: var(--color-background-base);
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--border-radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-elevation-sm);
+        }
+
+        .relationship-component-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .component-icon {
+            font-size: 24px;
+        }
+
+        .relationship-component-header h4 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+
+        .dependency-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: var(--color-background-secondary);
+            border-radius: var(--border-radius-md);
+            flex-wrap: wrap;
+        }
+
+        .flow-component {
+            background: var(--color-interactive-primary-default);
+            color: var(--color-text-inverse);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .flow-arrow {
+            font-size: 20px;
+            color: var(--color-text-tertiary);
+            font-weight: bold;
+        }
+
+        .flow-foundation {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 200px;
+        }
+
+        .foundation-token {
+            background: var(--color-background-base);
+            color: var(--color-text-primary);
+            padding: 8px 16px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--color-border-default);
+            font-size: 13px;
+            font-family: var(--typography-family-mono);
+            text-align: center;
+        }
+
+        .relationship-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .token-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--color-background-secondary);
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--color-border-light);
+        }
+
+        .token-detail code {
+            background: var(--color-background-base);
+            padding: 2px 6px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--color-border-default);
+            font-size: 12px;
+            color: var(--color-text-primary);
+        }
+
+        .token-value {
+            font-size: 12px;
+            color: var(--color-text-tertiary);
+            font-family: var(--typography-family-mono);
+        }
+
+        /* Token Relationship Chain */
+        .token-relationship-chain {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 16px;
+            background: var(--color-background-secondary);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--color-border-light);
+            margin-bottom: 12px;
+        }
+
+        .chain-component-token,
+        .chain-foundation-token,
+        .chain-raw-color {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--color-background-base);
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--color-border-default);
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        .chain-foundation-tokens,
+        .chain-raw-colors {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .chain-component-token {
+            background: var(--color-interactive-primary-default);
+            color: var(--color-text-inverse);
+            border-color: var(--color-interactive-primary-default);
+        }
+
+        .chain-foundation-token {
+            background: var(--color-semantic-info-default);
+            color: var(--color-text-inverse);
+            border-color: var(--color-semantic-info-default);
+        }
+
+        .chain-raw-color {
+            background: var(--color-semantic-success-default);
+            color: var(--color-text-inverse);
+            border-color: var(--color-semantic-success-default);
+        }
+
+        .chain-token-name {
+            font-family: var(--typography-family-mono);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .chain-token-value {
+            font-family: var(--typography-family-mono);
+            font-size: 10px;
+            opacity: 0.9;
+        }
+
+        .chain-arrow {
+            font-size: 16px;
+            color: var(--color-text-tertiary);
+            font-weight: bold;
+        }
         .theme-toggle { position: fixed; top: 16px; right: 16px; padding: 12px 20px; background: #2196f3; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 500; }
     </style>
     <style>
@@ -392,13 +880,40 @@
         </div>
 
         <div class="tabs">
-            <button class="tab active" data-tab="hierarchy">Token Hierarchy</button>
-            <button class="tab" data-tab="foundation">Foundation Tokens</button>
+            <button class="tab active" data-tab="overview">Overview</button>
+            <button class="tab" data-tab="colors">Colors</button>
+            <button class="tab" data-tab="spacing">Spacing</button>
+            <button class="tab" data-tab="typography">Typography</button>
+            <button class="tab" data-tab="components">Components</button>
+            <button class="tab" data-tab="relationships">Relationships</button>
         </div>
 
-        <div id="hierarchy" class="tab-content active">
-            <div class="hierarchy-section">
-                <h2 class="hierarchy-title">Token Hierarchy Flow</h2>
+        <div id="overview" class="tab-content active">
+            <div class="stats-section">
+                <h2 class="section-title">Design System Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Tokens</h3>
+                        <div class="stat-value" id="total-tokens">0</div>
+                        <p class="stat-description">Across all categories</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Color Tokens</h3>
+                        <div class="stat-value" id="color-tokens">0</div>
+                        <p class="stat-description">Semantic colors</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Components</h3>
+                        <div class="stat-value" id="component-count">0</div>
+                        <p class="stat-description">UI components</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Themes</h3>
+                        <div class="stat-value">4</div>
+                        <p class="stat-description">Available themes</p>
+                    </div>
+                </div>
+
                 <div class="hierarchy-flow">
                     <div class="hierarchy-node">
                         <h3>Raw Colors</h3>
@@ -416,14 +931,16 @@
                     </div>
                 </div>
 
-                <h2 class="hierarchy-title">Component Relationships</h2>
-                <div class="component-grid" id="componentGrid">
-                    <!-- Components will be populated here -->
+                <div class="recent-section">
+                    <h3>Recent Token Activity</h3>
+                    <div id="recent-tokens-list" class="recent-tokens">
+                        <!-- Recent tokens will be populated here -->
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div id="foundation" class="tab-content">
+        <div id="colors" class="tab-content">
             <div class="foundation-section">
                 <h2 class="foundation-title">Foundation Tokens</h2>
                 <div class="foundation-controls">
@@ -463,6 +980,38 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <div id="spacing" class="tab-content">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search spacing tokens..." id="spacing-search">
+                <button class="clear-search" id="clear-spacing-search">Clear</button>
+            </div>
+            <div class="spacing-grid" id="spacing-grid"></div>
+        </div>
+
+        <div id="typography" class="tab-content">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search typography tokens..." id="typography-search">
+                <button class="clear-search" id="clear-typography-search">Clear</button>
+            </div>
+            <div class="typography-grid" id="typography-grid"></div>
+        </div>
+
+        <div id="components" class="tab-content">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search components..." id="component-search">
+                <button class="clear-search" id="clear-component-search">Clear</button>
+            </div>
+            <div class="component-grid" id="component-grid"></div>
+        </div>
+
+        <div id="relationships" class="tab-content">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search token relationships..." id="relationship-search">
+                <button class="clear-search" id="clear-relationship-search">Clear</button>
+            </div>
+            <div class="relationship-graph" id="relationship-graph"></div>
         </div>
     </div>
 

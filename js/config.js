@@ -10,10 +10,32 @@ const CONFIG = {
         THEME_TOGGLE: '#themeToggle',
         TAB: '.tab',
         TAB_CONTENT: '.tab-content',
-        COMPONENT_GRID: '#componentGrid',
+        COMPONENT_GRID: '#component-grid',
         FOUNDATION_TABLE_BODY: '#foundationTableBody',
         TOKEN_TYPE_FILTER: '#tokenType',
-        THEME_FILTER: '#themeFilter'
+        THEME_FILTER: '#themeFilter',
+        // Stats
+        TOTAL_TOKENS: '#total-tokens',
+        COLOR_TOKENS: '#color-tokens',
+        COMPONENT_COUNT: '#component-count',
+        RECENT_TOKENS: '#recent-tokens-list',
+        // Search inputs
+        COLOR_SEARCH: '#color-search',
+        SPACING_SEARCH: '#spacing-search',
+        TYPOGRAPHY_SEARCH: '#typography-search',
+        COMPONENT_SEARCH: '#component-search',
+        RELATIONSHIP_SEARCH: '#relationship-search',
+        // Clear buttons
+        CLEAR_COLOR_SEARCH: '#clear-color-search',
+        CLEAR_SPACING_SEARCH: '#clear-spacing-search',
+        CLEAR_TYPOGRAPHY_SEARCH: '#clear-typography-search',
+        CLEAR_COMPONENT_SEARCH: '#clear-component-search',
+        CLEAR_RELATIONSHIP_SEARCH: '#clear-relationship-search',
+        // Grids
+        COLOR_GRID: '#color-grid',
+        SPACING_GRID: '#spacing-grid',
+        TYPOGRAPHY_GRID: '#typography-grid',
+        RELATIONSHIP_GRAPH: '#relationship-graph'
     },
 
     // CSS classes

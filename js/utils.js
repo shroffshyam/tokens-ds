@@ -167,9 +167,14 @@ class TokenUtils {
      * @param {string} colorValue - Color value
      * @returns {HTMLElement} Color preview element
      */
-    static createColorPreview(colorValue) {
-        return DOMUtils.createElement('div', CONFIG.CLASSES.TOKEN_COLOR, {
-            style: { backgroundColor: colorValue }
+    static createColorPreview(colorValue, size = 'default') {
+        const className = size === 'small' ? 'token-color-small' :
+                         size === 'tiny' ? 'token-color-tiny' :
+                         CONFIG.CLASSES.TOKEN_COLOR;
+
+        return DOMUtils.createElement('div', className, {
+            style: { backgroundColor: colorValue },
+            title: colorValue
         });
     }
 
