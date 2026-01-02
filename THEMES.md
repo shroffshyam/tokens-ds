@@ -2,12 +2,27 @@
 
 This design system supports both **light** and **dark** themes following Adobe Spectrum Design Token Standards.
 
-## 🎨 Theme Structure
+## 🎨 Theme Architecture
 
-The token system is organized with theme-specific foundation tokens:
+The token system uses a **Theme-Variant structure** with two distinct themes, each having light and dark variants:
 
-- **Light Theme**: `tokens/foundation/colors-light.json`
-- **Dark Theme**: `tokens/foundation/colors-dark.json`
+### Theme Structure
+
+1. **Classic Theme** (Traditional design approach):
+   - **Classic Light**: `tokens/foundation/colors-classic-light.json`
+   - **Classic Dark**: `tokens/foundation/colors-classic-dark.json`
+
+2. **Advance Theme** (Modern design approach):
+   - **Advance Light**: `tokens/foundation/colors-advance-light.json`
+   - **Advance Dark**: `tokens/foundation/colors-advance-dark.json`
+
+### Why Theme-Variant Architecture?
+
+- **Design Approaches**: Different themes represent different design philosophies (Classic vs Advance)
+- **Brightness Variants**: Each theme has consistent light/dark variants
+- **Scalability**: Easy to add more themes (e.g., Minimal, Bold) or variants (e.g., sepia, high-contrast)
+- **Semantic Clarity**: Clear distinction between theme identity and brightness preference
+- **Maintainability**: Each theme can evolve independently while maintaining variant consistency
 
 Foundation tokens are theme-specific, while component tokens automatically adapt to the active theme.
 
@@ -23,18 +38,32 @@ Include the generated CSS file in your HTML:
 
 ### Applying Themes
 
-The default theme is **light**. To switch to dark theme, add the `data-theme` attribute to your HTML element:
+The default theme is **Classic Light**. To switch to other theme variants, add the `data-theme` attribute to your HTML element:
 
 ```html
-<!-- Light theme (default) -->
+<!-- Classic Light theme (default) -->
 <html>
   <body>
     <!-- Your content -->
   </body>
 </html>
 
-<!-- Dark theme -->
-<html data-theme="dark">
+<!-- Classic Dark theme -->
+<html data-theme="classic-dark">
+  <body>
+    <!-- Your content -->
+  </body>
+</html>
+
+<!-- Advance Light theme -->
+<html data-theme="advance-light">
+  <body>
+    <!-- Your content -->
+  </body>
+</html>
+
+<!-- Advance Dark theme -->
+<html data-theme="advance-dark">
   <body>
     <!-- Your content -->
   </body>
@@ -46,15 +75,21 @@ The default theme is **light**. To switch to dark theme, add the `data-theme` at
 You can switch themes dynamically using JavaScript:
 
 ```javascript
-// Switch to dark theme
-document.documentElement.setAttribute('data-theme', 'dark');
+// Switch to specific theme variants
+document.documentElement.setAttribute('data-theme', 'classic-dark');
+document.documentElement.setAttribute('data-theme', 'advance-light');
+document.documentElement.setAttribute('data-theme', 'advance-dark');
 
-// Switch to light theme
-document.documentElement.setAttribute('data-theme', 'light');
+// Switch to Classic Light theme
+document.documentElement.setAttribute('data-theme', 'classic-light');
 
-// Toggle theme
-const currentTheme = document.documentElement.getAttribute('data-theme');
-const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+// Toggle theme (cycles through: classic-light → classic-dark → advance-light → advance-dark → classic-light)
+const currentTheme = document.documentElement.getAttribute('data-theme') || 'classic-light';
+let newTheme;
+if (currentTheme === 'classic-light') newTheme = 'classic-dark';
+else if (currentTheme === 'classic-dark') newTheme = 'advance-light';
+else if (currentTheme === 'advance-light') newTheme = 'advance-dark';
+else newTheme = 'classic-light';
 document.documentElement.setAttribute('data-theme', newTheme);
 ```
 
@@ -144,27 +179,34 @@ Component Tokens (theme-agnostic, reference foundation)
 
 ### How It Works
 
-1. **Raw Colors**: Defined once, used by both themes
-2. **Foundation Tokens**: 
-   - Light theme tokens are defined in `colors-light.json`
-   - Dark theme tokens are defined in `colors-dark.json`
-   - CSS outputs both with `[data-theme="light"]` and `[data-theme="dark"]` selectors
+1. **Raw Colors**: Defined once, used by all themes
+2. **Foundation Tokens**:
+   - **Theme-Specific Colors**: Classic and Advance themes with light/dark variants
+     - Classic: Traditional colors in `colors-classic-*.json`
+     - Advance: Modern colors in `colors-advance-*.json`
+   - **Shared Design Tokens**: Spacing and typography shared across all themes
+     - `spacing.json`: Consistent spacing scale for all themes
+     - `typography.json`: Consistent typography for all themes
+     - `colors-foundation.json`: Interface for component references
+   - CSS outputs all variants with appropriate `[data-theme="*"]` selectors
 3. **Component Tokens**: Reference foundation tokens, automatically adapt to active theme
 
 ## 🔧 Customizing Themes
 
 ### Adding New Theme Colors
 
-Edit the theme-specific foundation color files:
+Edit the theme-variant foundation color files:
 
-**Light Theme** (`tokens/foundation/colors-light.json`):
+**Classic Light** (`tokens/foundation/colors-classic-light.json`):
 ```json
 {
-  "color": {
-    "foundation": {
-      "light": {
-        "primary": {
-          "base": { "value": "{color.rawColors.blue.500}" }
+  "theme": {
+    "classic": {
+      "variant": {
+        "light": {
+          "primary": {
+            "base": { "value": "{color.rawColors.blue.600}" }
+          }
         }
       }
     }
@@ -172,14 +214,33 @@ Edit the theme-specific foundation color files:
 }
 ```
 
-**Dark Theme** (`tokens/foundation/colors-dark.json`):
+**Classic Dark** (`tokens/foundation/colors-classic-dark.json`):
 ```json
 {
-  "color": {
-    "foundation": {
-      "dark": {
-        "primary": {
-          "base": { "value": "{color.rawColors.blue.400}" }
+  "theme": {
+    "classic": {
+      "variant": {
+        "dark": {
+          "primary": {
+            "base": { "value": "{color.rawColors.blue.400}" }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+**Advance Light** (`tokens/foundation/colors-advance-light.json`):
+```json
+{
+  "theme": {
+    "advance": {
+      "variant": {
+        "light": {
+          "primary": {
+            "base": { "value": "{color.rawColors.blue.500}" }
+          }
         }
       }
     }
@@ -189,10 +250,15 @@ Edit the theme-specific foundation color files:
 
 ### Best Practices
 
-1. **Maintain Contrast**: Ensure dark theme has sufficient contrast ratios
-2. **Consistent Naming**: Use the same token names in both light and dark themes
-3. **Reference Raw Colors**: Always reference raw colors, never hardcode hex values in foundation tokens
-4. **Test Both Themes**: Always test your components in both light and dark themes
+1. **Theme Identity**: Each theme (Classic/Advance) should have a clear design philosophy and visual identity
+2. **Shared Design Tokens**: Spacing and typography are shared across themes for consistency
+3. **Theme-Specific Colors**: Only colors vary between themes; spacing/typography remain consistent
+4. **Variant Consistency**: Light/dark variants within a theme should maintain the theme's core identity
+5. **Maintain Contrast**: Ensure all theme variants have sufficient contrast ratios (WCAG AA compliance)
+6. **Consistent Naming**: Use the same token names across all theme variants
+7. **Reference Raw Colors**: Always reference raw colors, never hardcode hex values in foundation tokens
+8. **Test All Variants**: Always test components in all four theme variants
+9. **Semantic Color Usage**: Colors should serve the same semantic purpose across all themes
 
 ## 📚 Examples
 

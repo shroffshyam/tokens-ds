@@ -4,40 +4,40 @@
       "button": {
         "primary": {
           "background": {
-            "default": { "value": "{color.foundation.light.primary.base}" },
-            "hover": { "value": "{color.foundation.light.primary.dark}" },
-            "active": { "value": "{color.foundation.light.primary.darker}" },
-            "disabled": { "value": "{color.foundation.light.neutral.border.dark}" }
+            "default": { "value": "{color.foundation.primary.base}" },
+            "hover": { "value": "{color.foundation.primary.dark}" },
+            "active": { "value": "{color.foundation.primary.darker}" },
+            "disabled": { "value": "{color.foundation.neutral.border.dark}" }
           },
           "text": {
-            "default": { "value": "{color.foundation.light.neutral.text.inverse}" },
-            "disabled": { "value": "{color.foundation.light.neutral.text.disabled}" }
+            "default": { "value": "{color.foundation.neutral.text.inverse}" },
+            "disabled": { "value": "{color.foundation.neutral.text.disabled}" }
           },
           "border": {
-            "default": { "value": "{color.foundation.light.primary.base}" },
-            "disabled": { "value": "{color.foundation.light.neutral.border.dark}" }
+            "default": { "value": "{color.foundation.primary.base}" },
+            "disabled": { "value": "{color.foundation.neutral.border.dark}" }
           }
         },
         "secondary": {
           "background": {
-            "default": { "value": "{color.foundation.light.secondary.base}" },
-            "hover": { "value": "{color.foundation.light.secondary.dark}" }
+            "default": { "value": "{color.foundation.secondary.base}" },
+            "hover": { "value": "{color.foundation.secondary.dark}" }
           },
           "text": {
-            "default": { "value": "{color.foundation.light.neutral.text.inverse}" }
+            "default": { "value": "{color.foundation.neutral.text.inverse}" }
           }
         },
         "outline": {
           "background": {
             "default": { "value": "transparent" },
-            "hover": { "value": "{color.foundation.light.primary.lighter}" }
+            "hover": { "value": "{color.foundation.primary.lighter}" }
           },
           "text": {
-            "default": { "value": "{color.foundation.light.primary.base}" },
-            "hover": { "value": "{color.foundation.light.primary.dark}" }
+            "default": { "value": "{color.foundation.primary.base}" },
+            "hover": { "value": "{color.foundation.primary.dark}" }
           },
           "border": {
-            "default": { "value": "{color.foundation.light.primary.base}" }
+            "default": { "value": "{color.foundation.primary.base}" }
           }
         }
       }

@@ -1,0 +1,63 @@
+{
+  "theme": {
+    "advance": {
+      "variant": {
+        "light": {
+          "primary": {
+            "base": { "value": "{color.rawColors.blue.500}" },
+            "light": { "value": "{color.rawColors.blue.300}" },
+            "dark": { "value": "{color.rawColors.blue.700}" },
+            "lighter": { "value": "{color.rawColors.blue.100}" },
+            "darker": { "value": "{color.rawColors.blue.900}" }
+          },
+          "secondary": {
+            "base": { "value": "{color.rawColors.green.500}" },
+            "light": { "value": "{color.rawColors.green.300}" },
+            "dark": { "value": "{color.rawColors.green.700}" }
+          },
+          "semantic": {
+            "success": {
+              "base": { "value": "{color.rawColors.green.500}" },
+              "light": { "value": "{color.rawColors.green.100}" },
+              "dark": { "value": "{color.rawColors.green.700}" }
+            },
+            "error": {
+              "base": { "value": "{color.rawColors.red.500}" },
+              "light": { "value": "{color.rawColors.red.100}" },
+              "dark": { "value": "{color.rawColors.red.700}" }
+            },
+            "warning": {
+              "base": { "value": "{color.rawColors.yellow.500}" },
+              "light": { "value": "{color.rawColors.yellow.100}" },
+              "dark": { "value": "{color.rawColors.yellow.700}" }
+            },
+            "info": {
+              "base": { "value": "{color.rawColors.blue.500}" },
+              "light": { "value": "{color.rawColors.blue.100}" },
+              "dark": { "value": "{color.rawColors.blue.700}" }
+            }
+          },
+          "neutral": {
+            "background": {
+              "primary": { "value": "{color.rawColors.white.value}" },
+              "secondary": { "value": "{color.rawColors.gray.50}" },
+              "tertiary": { "value": "{color.rawColors.gray.100}" }
+            },
+            "text": {
+              "primary": { "value": "{color.rawColors.gray.900}" },
+              "secondary": { "value": "{color.rawColors.gray.700}" },
+              "tertiary": { "value": "{color.rawColors.gray.500}" },
+              "disabled": { "value": "{color.rawColors.gray.400}" },
+              "inverse": { "value": "{color.rawColors.white.value}" }
+            },
+            "border": {
+              "default": { "value": "{color.rawColors.gray.300}" },
+              "light": { "value": "{color.rawColors.gray.200}" },
+              "dark": { "value": "{color.rawColors.gray.400}" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

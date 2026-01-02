@@ -47,8 +47,10 @@ const CONFIG = {
 
     // Theme names
     THEMES: {
-        LIGHT: 'light',
-        DARK: 'dark',
+        CLASSIC_LIGHT: 'classic-light',
+        CLASSIC_DARK: 'classic-dark',
+        ADVANCE_LIGHT: 'advance-light',
+        ADVANCE_DARK: 'advance-dark',
         COMMON: 'common',
         ALL: 'all'
     },

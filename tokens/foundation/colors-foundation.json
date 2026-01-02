@@ -9,29 +9,29 @@
         "darker": { "value": "{color.rawColors.blue.900}" }
       },
       "secondary": {
-        "base": { "value": "{color.rawColors.green.500}" },
-        "light": { "value": "{color.rawColors.green.300}" },
-        "dark": { "value": "{color.rawColors.green.700}" }
+        "base": { "value": "{color.rawColors.gray.500}" },
+        "light": { "value": "{color.rawColors.gray.300}" },
+        "dark": { "value": "{color.rawColors.gray.700}" }
       },
       "semantic": {
         "success": {
           "base": { "value": "{color.rawColors.green.500}" },
-          "light": { "value": "{color.rawColors.green.100}" },
+          "light": { "value": "{color.rawColors.green.300}" },
           "dark": { "value": "{color.rawColors.green.700}" }
         },
         "error": {
           "base": { "value": "{color.rawColors.red.500}" },
-          "light": { "value": "{color.rawColors.red.100}" },
+          "light": { "value": "{color.rawColors.red.300}" },
           "dark": { "value": "{color.rawColors.red.700}" }
         },
         "warning": {
           "base": { "value": "{color.rawColors.yellow.500}" },
-          "light": { "value": "{color.rawColors.yellow.100}" },
+          "light": { "value": "{color.rawColors.yellow.300}" },
           "dark": { "value": "{color.rawColors.yellow.700}" }
         },
         "info": {
           "base": { "value": "{color.rawColors.blue.500}" },
-          "light": { "value": "{color.rawColors.blue.100}" },
+          "light": { "value": "{color.rawColors.blue.300}" },
           "dark": { "value": "{color.rawColors.blue.700}" }
         }
       },
@@ -57,4 +57,3 @@
     }
   }
 }
-

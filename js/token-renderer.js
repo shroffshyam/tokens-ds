@@ -161,7 +161,7 @@ class TokenRenderer {
  */
 class ThemeManager {
     constructor() {
-        this.currentTheme = CONFIG.THEMES.LIGHT;
+        this.currentTheme = CONFIG.THEMES.CLASSIC_LIGHT;
         this.init();
     }
 
@@ -169,7 +169,7 @@ class ThemeManager {
      * Initialize theme from storage
      */
     init() {
-        const savedTheme = StorageUtils.get(CONFIG.STORAGE_KEYS.THEME, CONFIG.THEMES.LIGHT);
+        const savedTheme = StorageUtils.get(CONFIG.STORAGE_KEYS.THEME, CONFIG.THEMES.CLASSIC_LIGHT);
         this.setTheme(savedTheme);
     }
 
@@ -192,12 +192,19 @@ class ThemeManager {
     }
 
     /**
-     * Toggle between light and dark themes
+     * Toggle between classic-light, classic-dark, advance-light, advance-dark themes
      */
     toggleTheme() {
-        const newTheme = this.currentTheme === CONFIG.THEMES.DARK
-            ? CONFIG.THEMES.LIGHT
-            : CONFIG.THEMES.DARK;
+        let newTheme;
+        if (this.currentTheme === CONFIG.THEMES.CLASSIC_LIGHT) {
+            newTheme = CONFIG.THEMES.CLASSIC_DARK;
+        } else if (this.currentTheme === CONFIG.THEMES.CLASSIC_DARK) {
+            newTheme = CONFIG.THEMES.ADVANCE_LIGHT;
+        } else if (this.currentTheme === CONFIG.THEMES.ADVANCE_LIGHT) {
+            newTheme = CONFIG.THEMES.ADVANCE_DARK;
+        } else {
+            newTheme = CONFIG.THEMES.CLASSIC_LIGHT;
+        }
         this.setTheme(newTheme);
     }
 }
@@ -264,7 +271,17 @@ class UIManager {
             // Update button text based on current theme
             const updateButtonText = () => {
                 const currentTheme = this.themeManager.getCurrentTheme();
-                themeToggle.textContent = `Switch to ${currentTheme === 'light' ? 'Dark' : 'Light'} Theme`;
+                let nextTheme;
+                if (currentTheme === CONFIG.THEMES.CLASSIC_LIGHT) {
+                    nextTheme = 'Classic Dark';
+                } else if (currentTheme === CONFIG.THEMES.CLASSIC_DARK) {
+                    nextTheme = 'Advance Light';
+                } else if (currentTheme === CONFIG.THEMES.ADVANCE_LIGHT) {
+                    nextTheme = 'Advance Dark';
+                } else {
+                    nextTheme = 'Classic Light';
+                }
+                themeToggle.textContent = `Switch to ${nextTheme} Theme`;
             };
 
             updateButtonText();
@@ -337,12 +354,19 @@ class UIManager {
         // Clear existing options except "All"
         select.innerHTML = `<option value="${CONFIG.FILTERS.ALL}">All Themes</option>`;
 
-        themes.forEach(theme => {
-            const option = DOMUtils.createElement('option', '', {
-                value: theme,
-                textContent: theme
-            });
-            select.appendChild(option);
+        // Add themes in specific order
+        const orderedThemes = ['classic-light', 'classic-dark', 'advance-light', 'advance-dark'];
+        orderedThemes.forEach(theme => {
+            if (themes.includes(theme)) {
+                const displayName = theme.split('-').map(word =>
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+                const option = DOMUtils.createElement('option', '', {
+                    value: theme,
+                    textContent: displayName
+                });
+                select.appendChild(option);
+            }
         });
     }
 }

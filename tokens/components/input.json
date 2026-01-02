@@ -3,29 +3,29 @@
     "component": {
       "input": {
         "background": {
-          "default": { "value": "{color.foundation.light.neutral.background.primary}" },
-          "disabled": { "value": "{color.foundation.light.neutral.background.tertiary}" },
-          "focus": { "value": "{color.foundation.light.neutral.background.primary}" }
+          "default": { "value": "{color.foundation.neutral.background.primary}" },
+          "disabled": { "value": "{color.foundation.neutral.background.tertiary}" },
+          "focus": { "value": "{color.foundation.neutral.background.primary}" }
         },
         "border": {
-          "default": { "value": "{color.foundation.light.neutral.border.default}" },
-          "focus": { "value": "{color.foundation.light.primary.base}" },
-          "error": { "value": "{color.foundation.light.semantic.error.base}" },
-          "disabled": { "value": "{color.foundation.light.neutral.border.light}" }
+          "default": { "value": "{color.foundation.neutral.border.default}" },
+          "focus": { "value": "{color.foundation.primary.base}" },
+          "error": { "value": "{color.foundation.semantic.error.base}" },
+          "disabled": { "value": "{color.foundation.neutral.border.light}" }
         },
         "text": {
-          "default": { "value": "{color.foundation.light.neutral.text.primary}" },
-          "placeholder": { "value": "{color.foundation.light.neutral.text.tertiary}" },
-          "disabled": { "value": "{color.foundation.light.neutral.text.disabled}" }
+          "default": { "value": "{color.foundation.neutral.text.primary}" },
+          "placeholder": { "value": "{color.foundation.neutral.text.tertiary}" },
+          "disabled": { "value": "{color.foundation.neutral.text.disabled}" }
         },
         "label": {
-          "default": { "value": "{color.foundation.light.neutral.text.secondary}" },
-          "focus": { "value": "{color.foundation.light.primary.base}" },
-          "error": { "value": "{color.foundation.light.semantic.error.base}" }
+          "default": { "value": "{color.foundation.neutral.text.secondary}" },
+          "focus": { "value": "{color.foundation.primary.base}" },
+          "error": { "value": "{color.foundation.semantic.error.base}" }
         },
         "helper": {
-          "default": { "value": "{color.foundation.light.neutral.text.tertiary}" },
-          "error": { "value": "{color.foundation.light.semantic.error.base}" }
+          "default": { "value": "{color.foundation.neutral.text.tertiary}" },
+          "error": { "value": "{color.foundation.semantic.error.base}" }
         }
       }
     }

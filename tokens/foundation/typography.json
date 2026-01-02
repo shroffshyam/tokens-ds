@@ -1,28 +1,14 @@
 {
   "fontSize": {
     "foundation": {
-      "xs": { "value": "12", "comment": "Extra small text" },
-      "sm": { "value": "14", "comment": "Small text" },
-      "base": { "value": "16", "comment": "Base text size" },
-      "lg": { "value": "18", "comment": "Large text" },
-      "xl": { "value": "20", "comment": "Extra large text" },
-      "2xl": { "value": "24", "comment": "2X large text" },
-      "3xl": { "value": "30", "comment": "3X large text" },
-      "4xl": { "value": "36", "comment": "4X large text" },
-      "5xl": { "value": "48", "comment": "5X large text" },
-      "6xl": { "value": "60", "comment": "6X large text" }
-    }
-  },
-  "fontFamily": {
-    "foundation": {
-      "sans": {
-        "value": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-        "comment": "System sans-serif font stack"
-      },
-      "mono": {
-        "value": "'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
-        "comment": "Monospace font stack"
-      }
+      "xs": { "value": "12px" },
+      "sm": { "value": "14px" },
+      "base": { "value": "16px" },
+      "lg": { "value": "18px" },
+      "xl": { "value": "20px" },
+      "2xl": { "value": "24px" },
+      "3xl": { "value": "30px" },
+      "4xl": { "value": "36px" }
     }
   },
   "fontWeight": {
@@ -38,9 +24,14 @@
     "foundation": {
       "tight": { "value": "1.25" },
       "normal": { "value": "1.5" },
-      "relaxed": { "value": "1.75" },
+      "relaxed": { "value": "1.625" },
       "loose": { "value": "2" }
+    }
+  },
+  "fontFamily": {
+    "foundation": {
+      "sans": { "value": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" },
+      "mono": { "value": "'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace" }
     }
   }
 }
-

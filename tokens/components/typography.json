@@ -3,18 +3,18 @@
     "component": {
       "text": {
         "heading": {
-          "primary": { "value": "{color.foundation.light.neutral.text.primary}" },
-          "secondary": { "value": "{color.foundation.light.neutral.text.secondary}" }
+          "primary": { "value": "{color.foundation.neutral.text.primary}" },
+          "secondary": { "value": "{color.foundation.neutral.text.secondary}" }
         },
         "body": {
-          "primary": { "value": "{color.foundation.light.neutral.text.primary}" },
-          "secondary": { "value": "{color.foundation.light.neutral.text.secondary}" },
-          "tertiary": { "value": "{color.foundation.light.neutral.text.tertiary}" }
+          "primary": { "value": "{color.foundation.neutral.text.primary}" },
+          "secondary": { "value": "{color.foundation.neutral.text.secondary}" },
+          "tertiary": { "value": "{color.foundation.neutral.text.tertiary}" }
         },
         "link": {
-          "default": { "value": "{color.foundation.light.primary.base}" },
-          "hover": { "value": "{color.foundation.light.primary.dark}" },
-          "visited": { "value": "{color.foundation.light.primary.darker}" }
+          "default": { "value": "{color.foundation.primary.base}" },
+          "hover": { "value": "{color.foundation.primary.dark}" },
+          "visited": { "value": "{color.foundation.primary.darker}" }
         }
       }
     }

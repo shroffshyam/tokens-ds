@@ -4,7 +4,7 @@ A scalable, cross-platform design system tokens project built with [Style Dictio
 
 **✨ Features:**
 - **Hierarchical Token Structure**: Raw Colors → Foundation → Components with CSS variable references
-- **Light & Dark Theme Support**: Complete theme system with data-theme attributes
+- **Theme-Variant Architecture**: Classic and Advance themes, each with light and dark variants
 - **Cross-Platform Generation**: Web (CSS), iOS (Swift), Android (XML) outputs
 - **Interactive Token Explorer**: Visual exploration of token relationships and hierarchies
 - **Adobe Spectrum Standards**: Following industry best practices for design tokens
@@ -22,9 +22,13 @@ The token system follows a three-tier hierarchy that ensures consistency and mai
 
 2. **Foundation Tokens** (`tokens/foundation/`)
    - Core design system tokens that reference raw colors
-   - **Theme Support**: Separate light and dark theme color tokens
-     - Light theme: `colors-light.json`
-     - Dark theme: `colors-dark.json`
+   - **Theme Architecture**: Theme-Variant structure with two distinct themes
+     - **Classic Theme**: Traditional design approach
+       - `colors-classic-light.json` (light variant)
+       - `colors-classic-dark.json` (dark variant)
+     - **Advance Theme**: Modern design approach
+       - `colors-advance-light.json` (light variant)
+       - `colors-advance-dark.json` (dark variant)
    - Includes:
      - **Colors**: Primary, secondary, semantic (success, error, warning, info), and neutral colors
      - **Spacing**: Base spacing scale (xs, sm, md, lg, xl, 2xl, 3xl, 4xl)
@@ -47,10 +51,13 @@ tokens-ds/
 │   ├── color/
 │   │   └── rawColors.json      # All raw color definitions
 │   ├── foundation/
-│   │   ├── colors-light.json   # Foundation color tokens (light theme)
-│   │   ├── colors-dark.json    # Foundation color tokens (dark theme)
-│   │   ├── spacing.json        # Foundation spacing tokens
-│   │   └── typography.json     # Foundation typography tokens
+│   │   ├── colors-classic-light.json    # Classic theme, light variant
+│   │   ├── colors-classic-dark.json     # Classic theme, dark variant
+│   │   ├── colors-advance-light.json    # Advance theme, light variant
+│   │   ├── colors-advance-dark.json     # Advance theme, dark variant
+│   │   ├── colors-foundation.json       # Foundation color interface (theme-agnostic)
+│   │   ├── spacing.json                 # Theme-agnostic spacing tokens
+│   │   └── typography.json              # Theme-agnostic typography tokens
 │   └── components/
 │       ├── button.json         # Button component tokens
 │       ├── card.json           # Card component tokens
@@ -137,7 +144,7 @@ The Token Explorer provides:
 - **Visual hierarchy**: See the relationship between Raw Colors → Foundation → Components
 - **Component details**: Explore each component's token dependencies with color previews
 - **Foundation table**: Browse all foundation tokens with advanced filtering by type and theme
-- **Theme switching**: Toggle between light and dark themes to see token variations in real-time
+- **Theme switching**: Toggle between Classic/Advance themes and their light/dark variants in real-time
 - **Responsive design**: Works on desktop and mobile devices
 - **Modular architecture**: Built with SOLID principles for maintainability
 
@@ -169,15 +176,21 @@ The explorer automatically loads your generated tokens and provides an intuitive
 - **CSS Variables** (`build/web/tokens.css`): Hierarchical CSS custom properties following [Adobe Spectrum Design Token Standards](https://spectrum.adobe.com/page/design-tokens/). Tokens are organized in three sections:
   - **Raw Colors**: Base color definitions (e.g., `--color-rawColors-blue-500`)
   - **Foundation Tokens**: Core design system tokens that reference raw colors using CSS variables
-    - Light theme (default): Applied to `:root` and `[data-theme="light"]`
-    - Dark theme: Applied to `[data-theme="dark"]`
+    - **Classic Theme**: Traditional design approach
+      - Classic Light (default): Applied to `:root` and `[data-theme="classic-light"]`
+      - Classic Dark: Applied to `[data-theme="classic-dark"]`
+    - **Advance Theme**: Modern design approach
+      - Advance Light: Applied to `[data-theme="advance-light"]`
+      - Advance Dark: Applied to `[data-theme="advance-dark"]`
   - **Component Tokens**: Component-specific tokens that reference foundation tokens using CSS variables (e.g., `--color-component-button-primary-background-default: var(--color-foundation-primary-base)`)
-  
+
+  **Theme Architecture**: Theme-Variant structure where themes represent different design approaches and variants represent brightness levels within each theme.
+
   This hierarchical structure ensures that:
   - Changes to raw colors automatically propagate through foundation and component tokens
   - The token hierarchy is maintained and clearly visible in the output
   - Tokens follow industry-standard naming conventions
-  - **Theme Support**: Use `data-theme="light"` or `data-theme="dark"` on HTML element to switch themes
+  - **Theme Support**: Use `data-theme="classic-light"`, `data-theme="classic-dark"`, `data-theme="advance-light"`, or `data-theme="advance-dark"` on HTML element to switch themes
   
 - **JSON** (`build/web/tokens.json`): Nested JSON format for JavaScript applications
 

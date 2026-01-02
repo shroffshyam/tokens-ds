@@ -11,16 +11,22 @@ StyleDictionary.registerFormat({
     const tokenMap = new Map();
     tokens.forEach(token => {
       const path = token.path.join('.');
-      const prefix = token.path[0] === 'color' ? 'color' : 
+      const prefix = token.path[0] === 'theme' ? 'color' : // theme tokens use color prefix
                      token.path[0] === 'size' ? 'size' :
                      token.path[0] === 'fontSize' ? 'font-size' :
                      token.path[0] === 'fontWeight' ? 'font-weight' :
                      token.path[0] === 'lineHeight' ? 'line-height' :
                      token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
-      // Remove theme prefix (light/dark) from path for CSS variable name only if it's a color foundation token
-      const pathWithoutTheme = (token.path[0] === 'color' && token.path[1] === 'foundation' && (token.path[2] === 'light' || token.path[2] === 'dark'))
-        ? token.path.filter((p, i) => !(i === 2 && (p === 'light' || p === 'dark')))
-        : token.path;
+
+      // Remove theme prefix from path for CSS variable name
+      let pathWithoutTheme;
+      if (token.path[0] === 'theme') {
+        // Theme tokens: theme.{themeName}.variant.{variantName}.* → color.foundation.*
+        pathWithoutTheme = ['color', 'foundation', ...token.path.slice(4)];
+      } else {
+        pathWithoutTheme = token.path;
+      }
+
       const name = pathWithoutTheme.slice(1).join('-');
       tokenMap.set(path, `--${prefix}-${name}`);
     });
@@ -50,15 +56,29 @@ StyleDictionary.registerFormat({
       return aPath.localeCompare(bPath);
     });
 
-    // Separate foundation tokens by theme and non-theme
-    const foundationLightColors = tokens.filter(token =>
-      token.path[0] === 'color' && token.path[1] === 'foundation' && token.path[2] === 'light'
+    // Separate foundation tokens by theme and variant
+    // Theme-Variant structure: theme.{themeName}.variant.{variantName}.*
+    const foundationClassicLight = tokens.filter(token =>
+      token.path[0] === 'theme' && token.path[1] === 'classic' &&
+      token.path[2] === 'variant' && token.path[3] === 'light'
     );
 
-    const foundationDarkColors = tokens.filter(token =>
-      token.path[0] === 'color' && token.path[1] === 'foundation' && token.path[2] === 'dark'
+    const foundationClassicDark = tokens.filter(token =>
+      token.path[0] === 'theme' && token.path[1] === 'classic' &&
+      token.path[2] === 'variant' && token.path[3] === 'dark'
     );
 
+    const foundationAdvanceLight = tokens.filter(token =>
+      token.path[0] === 'theme' && token.path[1] === 'advance' &&
+      token.path[2] === 'variant' && token.path[3] === 'light'
+    );
+
+    const foundationAdvanceDark = tokens.filter(token =>
+      token.path[0] === 'theme' && token.path[1] === 'advance' &&
+      token.path[2] === 'variant' && token.path[3] === 'dark'
+    );
+
+    // Common foundation tokens (spacing, typography - shared across themes)
     const foundationCommon = tokens.filter(token =>
       (token.path[0] === 'size' && token.path[1] === 'spacing') ||
       (token.path[0] === 'fontSize' && token.path[1] === 'foundation') ||
@@ -67,17 +87,31 @@ StyleDictionary.registerFormat({
       (token.path[0] === 'fontFamily' && token.path[1] === 'foundation')
     );
 
-    const foundationLight = [...foundationLightColors, ...foundationCommon].sort((a, b) => {
+    // Combine theme colors with common foundation tokens
+    const foundationClassicLightCombined = [...foundationClassicLight, ...foundationCommon].sort((a, b) => {
       const aPath = a.path.join('-');
       const bPath = b.path.join('-');
       return aPath.localeCompare(bPath);
     });
 
-    const foundationDark = foundationDarkColors.sort((a, b) => {
+    const foundationClassicDarkCombined = [...foundationClassicDark, ...foundationCommon].sort((a, b) => {
       const aPath = a.path.join('-');
       const bPath = b.path.join('-');
       return aPath.localeCompare(bPath);
     });
+
+    const foundationAdvanceLightCombined = [...foundationAdvanceLight, ...foundationCommon].sort((a, b) => {
+      const aPath = a.path.join('-');
+      const bPath = b.path.join('-');
+      return aPath.localeCompare(bPath);
+    });
+
+    const foundationAdvanceDarkCombined = [...foundationAdvanceDark, ...foundationCommon].sort((a, b) => {
+      const aPath = a.path.join('-');
+      const bPath = b.path.join('-');
+      return aPath.localeCompare(bPath);
+    });
+
 
     // Component tokens (theme-agnostic, will reference theme-specific foundation)
     const components = tokens.filter(token => 
@@ -98,8 +132,9 @@ StyleDictionary.registerFormat({
     output.push(' * Following Adobe Spectrum Design Token Standards');
     output.push(' * https://spectrum.adobe.com/page/design-tokens/');
     output.push(' *');
-    output.push(' * Theme Support: Use data-theme="light" or data-theme="dark" on html/body');
-    output.push(' * Default theme is light. Add data-theme="dark" to enable dark theme.');
+    output.push(' * Theme Support: Use data-theme="classic-light", "classic-dark", "advance-light", "advance-dark" on html/body');
+    output.push(' * Architecture: theme.{themeName}.variant.{variantName}.* structure');
+    output.push(' * Default theme is classic-light. Classic=Traditional, Advance=Modern design approaches');
     output.push(' */');
     output.push('');
     
@@ -121,26 +156,26 @@ StyleDictionary.registerFormat({
     output.push('}');
     output.push('');
 
-    // Light Theme Foundation Tokens (default)
-    if (foundationLight.length > 0) {
-      output.push('[data-theme="light"],');
+    // Classic Light Theme (default)
+    if (foundationClassicLightCombined.length > 0) {
+      output.push('[data-theme="classic-light"],');
       output.push(':root {');
       output.push('  /* ============================================');
-      output.push('   * Foundation Tokens - Light Theme (Default)');
+      output.push('   * Foundation Tokens - Classic Light Theme (Default)');
       output.push('   * Core design system tokens referencing raw colors');
       output.push('   * ============================================ */');
       output.push('');
-      
-      foundationLight.forEach(token => {
-        const prefix = token.path[0] === 'color' ? 'color' :
+
+      foundationClassicLightCombined.forEach(token => {
+        const prefix = token.path[0] === 'theme' ? 'color' :
                        token.path[0] === 'size' ? 'size' :
                        token.path[0] === 'fontSize' ? 'font-size' :
                        token.path[0] === 'fontWeight' ? 'font-weight' :
                        token.path[0] === 'lineHeight' ? 'line-height' :
                        token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
-        // Remove 'light' from path for CSS variable name only for color foundation tokens
-        const pathWithoutTheme = (token.path[0] === 'color' && token.path[1] === 'foundation' && token.path[2] === 'light')
-          ? token.path.filter((p, i) => !(i === 2 && p === 'light'))
+        // For theme tokens: theme.classic.variant.light.* → foundation.*
+        const pathWithoutTheme = (token.path[0] === 'theme')
+          ? ['color', 'foundation', ...token.path.slice(4)]
           : token.path;
         const name = pathWithoutTheme.slice(1).join('-');
         const value = getReferenceValue(token);
@@ -152,19 +187,26 @@ StyleDictionary.registerFormat({
       output.push('');
     }
 
-    // Dark Theme Foundation Tokens
-    if (foundationDark.length > 0) {
-      output.push('[data-theme="dark"] {');
+    // Classic Dark Theme
+    if (foundationClassicDarkCombined.length > 0) {
+      output.push('[data-theme="classic-dark"] {');
       output.push('  /* ============================================');
-      output.push('   * Foundation Tokens - Dark Theme');
+      output.push('   * Foundation Tokens - Classic Dark Theme');
       output.push('   * Core design system tokens referencing raw colors');
       output.push('   * ============================================ */');
       output.push('');
-      
-      foundationDark.forEach(token => {
-        const prefix = 'color';
-        // Remove 'dark' from path for CSS variable name
-        const pathWithoutTheme = token.path.filter((p, i) => !(i === 2 && p === 'dark'));
+
+      foundationClassicDarkCombined.forEach(token => {
+        const prefix = token.path[0] === 'theme' ? 'color' :
+                       token.path[0] === 'size' ? 'size' :
+                       token.path[0] === 'fontSize' ? 'font-size' :
+                       token.path[0] === 'fontWeight' ? 'font-weight' :
+                       token.path[0] === 'lineHeight' ? 'line-height' :
+                       token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
+        // For theme tokens: theme.classic.variant.dark.* → foundation.*
+        const pathWithoutTheme = (token.path[0] === 'theme')
+          ? ['color', 'foundation', ...token.path.slice(4)]
+          : token.path;
         const name = pathWithoutTheme.slice(1).join('-');
         const value = getReferenceValue(token);
         const comment = token.comment ? ` /* ${token.comment} */` : '';
@@ -174,6 +216,67 @@ StyleDictionary.registerFormat({
       output.push('}');
       output.push('');
     }
+
+    // Advance Light Theme
+    if (foundationAdvanceLight.length > 0) {
+      output.push('[data-theme="advance-light"] {');
+      output.push('  /* ============================================');
+      output.push('   * Foundation Tokens - Advance Light Theme');
+      output.push('   * Modern design system tokens referencing raw colors');
+      output.push('   * ============================================ */');
+      output.push('');
+
+      foundationAdvanceLightCombined.forEach(token => {
+        const prefix = token.path[0] === 'theme' ? 'color' :
+                       token.path[0] === 'size' ? 'size' :
+                       token.path[0] === 'fontSize' ? 'font-size' :
+                       token.path[0] === 'fontWeight' ? 'font-weight' :
+                       token.path[0] === 'lineHeight' ? 'line-height' :
+                       token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
+        // For theme tokens: theme.advance.variant.light.* → foundation.*
+        const pathWithoutTheme = (token.path[0] === 'theme')
+          ? ['color', 'foundation', ...token.path.slice(4)]
+          : token.path;
+        const name = pathWithoutTheme.slice(1).join('-');
+        const value = getReferenceValue(token);
+        const comment = token.comment ? ` /* ${token.comment} */` : '';
+        output.push(`  --${prefix}-${name}: ${value};${comment}`);
+      });
+      output.push('');
+      output.push('}');
+      output.push('');
+    }
+
+    // Advance Dark Theme
+    if (foundationAdvanceDarkCombined.length > 0) {
+      output.push('[data-theme="advance-dark"] {');
+      output.push('  /* ============================================');
+      output.push('   * Foundation Tokens - Advance Dark Theme');
+      output.push('   * Modern design system tokens referencing raw colors');
+      output.push('   * ============================================ */');
+      output.push('');
+
+      foundationAdvanceDarkCombined.forEach(token => {
+        const prefix = token.path[0] === 'theme' ? 'color' :
+                       token.path[0] === 'size' ? 'size' :
+                       token.path[0] === 'fontSize' ? 'font-size' :
+                       token.path[0] === 'fontWeight' ? 'font-weight' :
+                       token.path[0] === 'lineHeight' ? 'line-height' :
+                       token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
+        // For theme tokens: theme.advance.variant.dark.* → foundation.*
+        const pathWithoutTheme = (token.path[0] === 'theme')
+          ? ['color', 'foundation', ...token.path.slice(4)]
+          : token.path;
+        const name = pathWithoutTheme.slice(1).join('-');
+        const value = getReferenceValue(token);
+        const comment = token.comment ? ` /* ${token.comment} */` : '';
+        output.push(`  --${prefix}-${name}: ${value};${comment}`);
+      });
+      output.push('');
+      output.push('}');
+      output.push('');
+    }
+
 
     // Component Tokens (theme-agnostic, reference theme-specific foundation)
     if (components.length > 0) {
@@ -206,8 +309,7 @@ StyleDictionary.registerFormat({
 
 module.exports = {
   source: [
-    'tokens/**/*.json',
-    '!tokens/foundation/colors.json' // Exclude old non-theme colors.json
+    'tokens/**/*.json'
   ],
   platforms: {
     web: {

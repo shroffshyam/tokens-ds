@@ -8,9 +8,37 @@
 rawColors (All Colors)
     ↓
 foundation (Core Design System)
+├── theme.classic.variant.* (Classic Theme: light/dark color variants)
+├── theme.advance.variant.* (Advance Theme: light/dark color variants)
+├── color.foundation.* (Foundation color interface)
+├── size.spacing.* (Shared spacing scale)
+├── fontSize.foundation.* (Shared typography scale)
+├── fontWeight.foundation.* (Shared font weights)
+├── lineHeight.foundation.* (Shared line heights)
+└── fontFamily.foundation.* (Shared font families)
     ↓
-components (UI Components)
+components (UI Components - Theme-aware)
 ```
+
+### Theme Architecture
+
+The token system uses a **hybrid Theme-Variant structure**:
+
+- **Theme-Specific Colors** (unique per theme):
+  - **Classic Theme**: Traditional color palette
+    - `theme.classic.variant.light.*`
+    - `theme.classic.variant.dark.*`
+  - **Advance Theme**: Modern color palette
+    - `theme.advance.variant.light.*`
+    - `theme.advance.variant.dark.*`
+
+- **Shared Design Tokens** (consistent across themes):
+  - `color.foundation.*`: Interface for component references
+  - `size.spacing.*`: Universal spacing scale
+  - `fontSize.foundation.*`: Universal typography scale
+  - `fontWeight.foundation.*`: Universal font weights
+  - `lineHeight.foundation.*`: Universal line heights
+  - `fontFamily.foundation.*`: Universal font families
 
 ### Token Path Examples
 
@@ -19,10 +47,16 @@ components (UI Components)
 - `{color.rawColors.gray.900}` → Dark gray text color
 - `{color.rawColors.white.value}` → White color
 
-#### Foundation Colors
-- `{color.foundation.primary.base}` → Primary brand color
-- `{color.foundation.semantic.error.base}` → Error state color
-- `{color.foundation.neutral.text.primary}` → Primary text color
+#### Foundation Colors (Theme Variants)
+- `{theme.classic.variant.light.primary.base}` → Classic light theme primary color
+- `{theme.classic.variant.dark.primary.base}` → Classic dark theme primary color
+- `{theme.advance.variant.light.primary.base}` → Advance light theme primary color
+- `{theme.advance.variant.dark.primary.base}` → Advance dark theme primary color
+
+#### Foundation Colors (Resolved)
+- `{color.foundation.primary.base}` → Primary brand color (theme-aware)
+- `{color.foundation.semantic.error.base}` → Error state color (theme-aware)
+- `{color.foundation.neutral.text.primary}` → Primary text color (theme-aware)
 
 #### Foundation Spacing
 - `{size.spacing.xs}` → 4px spacing
@@ -57,12 +91,16 @@ components (UI Components)
 
 ### Step 2: Add Foundation Token
 ```json
-// tokens/foundation/colors.json
+// tokens/foundation/colors-classic-light.json
 {
-  "color": {
-    "foundation": {
-      "accent": {
-        "base": { "value": "{color.rawColors.orange.500}" }
+  "theme": {
+    "classic": {
+      "variant": {
+        "light": {
+          "accent": {
+            "base": { "value": "{color.rawColors.orange.500}" }
+          }
+        }
       }
     }
   }
