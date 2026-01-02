@@ -6,7 +6,8 @@
   "scripts": {
     "build": "style-dictionary build --config sd.config.js",
     "build:clean": "rm -rf build && style-dictionary build --config sd.config.js",
-    "watch": "style-dictionary build --watch --config sd.config.js"
+    "watch": "style-dictionary build --watch --config sd.config.js",
+    "explorer": "npx http-server -p 3000 -c-1 --cors -o token-explorer.html"
   },
   "keywords": [
     "design-tokens",
@@ -17,7 +18,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "style-dictionary": "^3.9.0"
+    "style-dictionary": "^3.9.0",
+    "http-server": "^14.1.1"
   }
 }
 

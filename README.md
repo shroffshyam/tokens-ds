@@ -2,6 +2,13 @@
 
 A scalable, cross-platform design system tokens project built with [Style Dictionary](https://amzn.github.io/style-dictionary/). This design system serves as the single source of truth for spacing guidelines, font sizing, and colors across iOS, Android, and Web platforms.
 
+**✨ Features:**
+- **Hierarchical Token Structure**: Raw Colors → Foundation → Components with CSS variable references
+- **Light & Dark Theme Support**: Complete theme system with data-theme attributes
+- **Cross-Platform Generation**: Web (CSS), iOS (Swift), Android (XML) outputs
+- **Interactive Token Explorer**: Visual exploration of token relationships and hierarchies
+- **Adobe Spectrum Standards**: Following industry best practices for design tokens
+
 ## 🏗️ Architecture
 
 ### Token Hierarchy
@@ -35,6 +42,7 @@ tokens-ds/
 ├── sd.config.js                # Style Dictionary configuration (JavaScript)
 ├── config.json                 # Legacy JSON config (deprecated, use sd.config.js)
 ├── package.json                # Project dependencies and scripts
+├── token-explorer.html         # Interactive token explorer SPA
 ├── tokens/
 │   ├── color/
 │   │   └── rawColors.json      # All raw color definitions
@@ -54,6 +62,19 @@ tokens-ds/
     └── android/                # Android outputs (XML)
 ```
 
+## 🚀 Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Build your design tokens
+npm run build
+
+# Explore your tokens interactively
+npm run explorer
+```
+
 ## 🚀 Getting Started
 
 ### Installation
@@ -61,6 +82,8 @@ tokens-ds/
 ```bash
 npm install
 ```
+
+This installs Style Dictionary and the http-server for the Token Explorer.
 
 ### Building Tokens
 
@@ -76,11 +99,69 @@ Build and clean previous outputs:
 npm run build:clean
 ```
 
-Watch mode for development:
+Watch mode for development (rebuilds automatically on file changes):
 
 ```bash
 npm run watch
 ```
+
+### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run build` | Build tokens for web, iOS, and Android |
+| `npm run build:clean` | Clean build directory and rebuild |
+| `npm run watch` | Watch for changes and rebuild automatically |
+| `npm run explorer` | Start local server and open Token Explorer |
+
+### Exploring Tokens
+
+After building, explore your tokens interactively using the dedicated npm command:
+
+```bash
+npm run explorer
+```
+
+This starts a local development server at `http://localhost:3000` and automatically opens the Token Explorer in your browser.
+
+**Alternative methods:**
+```bash
+# Direct file opening
+open token-explorer.html
+
+# Manual server start
+npx http-server -p 3000 -c-1 --cors -o token-explorer.html
+```
+
+The Token Explorer provides:
+- **Visual hierarchy**: See the relationship between Raw Colors → Foundation → Components
+- **Component details**: Explore each component's token dependencies with color previews
+- **Foundation table**: Browse all foundation tokens with advanced filtering by type and theme
+- **Theme switching**: Toggle between light and dark themes to see token variations in real-time
+- **Responsive design**: Works on desktop and mobile devices
+- **Modular architecture**: Built with SOLID principles for maintainability
+
+## 🖥️ Token Explorer
+
+An interactive Single Page Application for exploring your design tokens:
+
+```bash
+# Quick start with npm
+npm run explorer
+
+# Or open manually
+open token-explorer.html
+```
+
+**Features:**
+- **Hierarchy Visualization**: See the complete token flow from Raw Colors → Foundation → Components
+- **Component Relationships**: Explore each component's token dependencies with visual color previews
+- **Foundation Tokens Table**: Browse all foundation tokens with advanced filtering by type and theme
+- **Theme Switching**: Toggle between light and dark themes to see token variations
+- **Token Details**: View token values, CSS variable references, and color previews
+- **Responsive Design**: Works on desktop and mobile devices
+
+The explorer automatically loads your generated tokens and provides an intuitive interface for understanding the design system architecture.
 
 ## 📦 Output Formats
 
