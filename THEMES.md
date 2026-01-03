@@ -211,13 +211,12 @@ Component Tokens (theme-agnostic, reference foundation)
 
 1. **Raw Colors**: Defined once, used by all themes
 2. **Foundation Tokens**:
-   - **Theme-Specific Colors**: Classic and Advance themes with light/dark variants
-     - Classic: Traditional colors in `colors-classic-*.json`
-     - Advance: Modern colors in `colors-advance-*.json`
-   - **Shared Design Tokens**: Spacing and typography shared across all themes
+   - **Theme-Specific Semantic Tokens**: Complete theme definitions in dedicated theme files
+     - Classic: `theme-classic-light.json` and `theme-classic-dark.json`
+     - Advance: `theme-advance-light.json` and `theme-advance-dark.json`
+   - **Shared Design Tokens**: Spacing scale shared across all themes
      - `spacing.json`: Consistent spacing scale for all themes
-     - `typography.json`: Consistent typography for all themes
-     - `colors-foundation.json`: Interface for component references
+   - Each theme file contains complete semantic token definitions (colors, typography, borders, shadows)
    - CSS outputs all variants with appropriate `[data-theme="*"]` selectors
 3. **Component Tokens**: Reference foundation tokens, automatically adapt to active theme
 
@@ -225,53 +224,58 @@ Component Tokens (theme-agnostic, reference foundation)
 
 ### Adding New Theme Colors
 
-Edit the theme-variant foundation color files:
+Edit the appropriate theme file to add new semantic color tokens. Each theme file contains complete semantic token definitions:
 
-**Classic Light** (`tokens/foundation/colors-classic-light.json`):
+**Classic Light** (`tokens/foundation/theme-classic-light.json`):
 ```json
 {
-  "theme": {
-    "classic": {
-      "variant": {
-        "light": {
-          "primary": {
-            "base": { "value": "{color.rawColors.blue.600}" }
-          }
-        }
+  "color": {
+    "interactive": {
+      "accent": {
+        "default": { "value": "{color.rawColors.blue.600}" },
+        "hover": { "value": "{color.rawColors.blue.700}" }
       }
     }
   }
 }
 ```
 
-**Classic Dark** (`tokens/foundation/colors-classic-dark.json`):
+**Classic Dark** (`tokens/foundation/theme-classic-dark.json`):
 ```json
 {
-  "theme": {
-    "classic": {
-      "variant": {
-        "dark": {
-          "primary": {
-            "base": { "value": "{color.rawColors.blue.400}" }
-          }
-        }
+  "color": {
+    "interactive": {
+      "accent": {
+        "default": { "value": "{color.rawColors.blue.400}" },
+        "hover": { "value": "{color.rawColors.blue.500}" }
       }
     }
   }
 }
 ```
 
-**Advance Light** (`tokens/foundation/colors-advance-light.json`):
+**Advance Light** (`tokens/foundation/theme-advance-light.json`):
 ```json
 {
-  "theme": {
-    "advance": {
-      "variant": {
-        "light": {
-          "primary": {
-            "base": { "value": "{color.rawColors.blue.500}" }
-          }
-        }
+  "color": {
+    "interactive": {
+      "accent": {
+        "default": { "value": "{color.rawColors.blue.500}" },
+        "hover": { "value": "{color.rawColors.blue.600}" }
+      }
+    }
+  }
+}
+```
+
+**Advance Dark** (`tokens/foundation/theme-advance-dark.json`):
+```json
+{
+  "color": {
+    "interactive": {
+      "accent": {
+        "default": { "value": "{color.rawColors.blue.400}" },
+        "hover": { "value": "{color.rawColors.blue.500}" }
       }
     }
   }

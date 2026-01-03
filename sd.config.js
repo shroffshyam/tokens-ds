@@ -177,12 +177,25 @@ StyleDictionary.registerFormat({
       output.push('');
 
       foundationClassicDark.forEach(token => {
-        const prefix = token.path[0] === 'theme' ? 'color' :
-                       token.path[0] === 'size' ? 'size' :
-                       token.path[0] === 'fontSize' ? 'font-size' :
-                       token.path[0] === 'fontWeight' ? 'font-weight' :
-                       token.path[0] === 'lineHeight' ? 'line-height' :
-                       token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
+        let prefix = token.path[0] === 'theme' ? 'color' :
+                     token.path[0] === 'size' ? 'size' :
+                     token.path[0] === 'fontSize' ? 'font-size' :
+                     token.path[0] === 'fontWeight' ? 'font-weight' :
+                     token.path[0] === 'lineHeight' ? 'line-height' :
+                     token.path[0] === 'fontFamily' ? 'font-family' : token.path[0];
+
+        // For theme tokens: theme.classic.variant.dark.* → foundation.*
+        let pathWithoutTheme = (token.path[0] === 'theme')
+          ? ['color', 'foundation', ...token.path.slice(4)]
+          : token.path;
+
+        // Handle component overrides (they use 'component' prefix)
+        if (token.path[0] === 'component') {
+          prefix = 'color'; // Component overrides are color-related
+          // For component overrides, treat as ['color', 'component', ...] for consistent naming
+          pathWithoutTheme = ['color'].concat(token.path);
+        }
+
         const name = pathWithoutTheme.slice(1).join('-');
         const value = getReferenceValue(token);
         const comment = token.comment ? ` /* ${token.comment} */` : '';

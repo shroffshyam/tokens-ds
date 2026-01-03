@@ -48,9 +48,10 @@ The token system follows a three-tier hierarchy that ensures consistency and mai
 ```
 tokens-ds/
 ├── sd.config.js                # Style Dictionary configuration (JavaScript)
-├── config.json                 # Legacy JSON config (deprecated, use sd.config.js)
 ├── package.json                # Project dependencies and scripts
 ├── token-explorer.html         # Interactive token explorer SPA
+├── examples/                   # Example files
+│   └── theme-demo.html         # Theme demonstration page
 ├── tokens/
 │   ├── color/
 │   │   └── rawColors.json      # All raw color definitions
@@ -58,7 +59,8 @@ tokens-ds/
 │   │   ├── theme-classic-light.json      # Complete Classic light theme (semantic tokens)
 │   │   ├── theme-classic-dark.json      # Complete Classic dark theme (semantic tokens)
 │   │   ├── theme-advance-light.json     # Complete Advance light theme (semantic tokens)
-│   │   └── theme-advance-dark.json      # Complete Advance dark theme (semantic tokens)
+│   │   ├── theme-advance-dark.json      # Complete Advance dark theme (semantic tokens)
+│   │   └── spacing.json                 # Spacing scale definitions
 │   └── components/
 │       ├── button.json         # Button component tokens
 │       ├── card.json           # Card component tokens
@@ -244,9 +246,9 @@ Tokens can reference other tokens using the `{token.path}` syntax:
 ```json
 {
   "color": {
-    "foundation": {
+    "interactive": {
       "primary": {
-        "base": { "value": "{color.rawColors.blue.500}" }
+        "default": { "value": "{color.rawColors.blue.500}" }
       }
     }
   }
@@ -254,6 +256,8 @@ Tokens can reference other tokens using the `{token.path}` syntax:
 ```
 
 ### Component Tokens Reference Foundation
+
+Component tokens reference semantic foundation tokens from the active theme:
 
 ```json
 {
@@ -312,19 +316,22 @@ Edit `tokens/color/rawColors.json` to add new color definitions:
 
 ### Adding New Foundation Tokens
 
-Create or edit files in `tokens/foundation/` to add new foundation tokens. Remember to reference raw colors:
+Edit the appropriate theme file in `tokens/foundation/` to add new foundation tokens. Each theme file contains complete semantic token definitions. Remember to reference raw colors:
 
 ```json
 {
   "color": {
-    "foundation": {
+    "interactive": {
       "accent": {
-        "base": { "value": "{color.rawColors.purple.500}" }
+        "default": { "value": "{color.rawColors.purple.500}" },
+        "hover": { "value": "{color.rawColors.purple.600}" }
       }
     }
   }
 }
 ```
+
+**Note**: Add the token to all four theme files (`theme-classic-light.json`, `theme-classic-dark.json`, `theme-advance-light.json`, `theme-advance-dark.json`) to ensure consistent theming across all variants.
 
 ### Adding New Component Tokens
 

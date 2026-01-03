@@ -65,26 +65,23 @@ Themes can include component-specific overrides to handle exceptions where speci
 - `{color.rawColors.gray.900}` → Dark gray text color
 - `{color.rawColors.white.value}` → White color
 
-#### Foundation Colors (Theme Variants)
-- `{theme.classic.variant.light.primary.base}` → Classic light theme primary color
-- `{theme.classic.variant.dark.primary.base}` → Classic dark theme primary color
-- `{theme.advance.variant.light.primary.base}` → Advance light theme primary color
-- `{theme.advance.variant.dark.primary.base}` → Advance dark theme primary color
-
-#### Foundation Colors (Resolved)
-- `{color.foundation.primary.base}` → Primary brand color (theme-aware)
-- `{color.foundation.semantic.error.base}` → Error state color (theme-aware)
-- `{color.foundation.neutral.text.primary}` → Primary text color (theme-aware)
+#### Foundation Semantic Colors (Theme-Aware)
+Foundation colors are defined in theme files and automatically resolve based on the active theme:
+- `{color.interactive.primary.default}` → Primary interactive color (theme-aware)
+- `{color.semantic.error.default}` → Error state color (theme-aware)
+- `{color.text.primary}` → Primary text color (theme-aware)
+- `{color.background.base}` → Base background color (theme-aware)
 
 #### Foundation Spacing
-- `{size.spacing.xs}` → 4px spacing
-- `{size.spacing.md}` → 16px spacing
-- `{size.spacing.lg}` → 24px spacing
+- `{spacing.scale.xs}` → Extra small spacing
+- `{spacing.scale.md}` → Medium spacing
+- `{spacing.scale.lg}` → Large spacing
 
 #### Foundation Typography
-- `{fontSize.foundation.base}` → 16px base font size
-- `{fontWeight.foundation.bold}` → 700 font weight
-- `{lineHeight.foundation.normal}` → 1.5 line height
+Typography tokens are defined within each theme file:
+- `{typography.size.base}` → Base font size (theme-aware)
+- `{typography.weight.bold}` → Bold font weight
+- `{typography.lineHeight.normal}` → Normal line height
 
 #### Component Tokens
 - `{color.component.button.primary.background.default}` → Button primary background
@@ -108,22 +105,23 @@ Themes can include component-specific overrides to handle exceptions where speci
 ```
 
 ### Step 2: Add Foundation Token
+Add the token to all theme files to ensure consistent theming. Example for Classic Light:
+
 ```json
-// tokens/foundation/colors-classic-light.json
+// tokens/foundation/theme-classic-light.json
 {
-  "theme": {
-    "classic": {
-      "variant": {
-        "light": {
-          "accent": {
-            "base": { "value": "{color.rawColors.orange.500}" }
-          }
-        }
+  "color": {
+    "interactive": {
+      "accent": {
+        "default": { "value": "{color.rawColors.orange.500}" },
+        "hover": { "value": "{color.rawColors.orange.600}" }
       }
     }
   }
 }
 ```
+
+Repeat this for `theme-classic-dark.json`, `theme-advance-light.json`, and `theme-advance-dark.json` with appropriate color values for each theme variant.
 
 ### Step 3: Use in Component
 ```json
@@ -133,7 +131,7 @@ Themes can include component-specific overrides to handle exceptions where speci
     "component": {
       "alert": {
         "warning": {
-          "background": { "value": "{color.foundation.accent.base}" }
+          "background": { "value": "{color.interactive.accent.default}" }
         }
       }
     }
