@@ -4,8 +4,9 @@
   "description": "Scalable cross-platform design system tokens using Style Dictionary",
   "main": "index.js",
   "scripts": {
-    "build": "style-dictionary build --config sd.config.js",
-    "build:clean": "rm -rf build && style-dictionary build --config sd.config.js",
+    "build": "node build-themes.js",
+    "build:clean": "rm -rf build && node build-themes.js",
+    "build:legacy": "style-dictionary build --config sd.config.js",
     "watch": "style-dictionary build --watch --config sd.config.js",
     "explorer": "npx http-server -p 3000 -c-1 --cors -o token-explorer.html"
   },
