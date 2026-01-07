@@ -1,39 +1,30 @@
 {
-  "color": {
-    "component": {
-      "card": {
-        "background": {
-          "default": { "value": "{color.background.base}" },
-          "elevated": { "value": "{color.background.elevated}" }
-        },
-        "border": {
-          "default": { "value": "{color.border.default}" },
-          "light": { "value": "{color.border.light}" }
-        },
-        "shadow": {
-          "sm": { "value": "{shadow.elevation.sm}" },
-          "md": { "value": "{shadow.elevation.md}" },
-          "lg": { "value": "{shadow.elevation.lg}" }
-        }
-      }
-    }
-  },
-  "size": {
-    "component": {
-      "card": {
-        "padding": {
-          "sm": { "value": "{spacing.scale.md}" },
-          "md": { "value": "{spacing.scale.lg}" },
-          "lg": { "value": "{spacing.scale.xl}" }
-        },
-        "borderRadius": {
-          "sm": { "value": "{border.radius.sm}" },
-          "md": { "value": "{border.radius.md}" },
-          "lg": { "value": "{border.radius.lg}" }
-        },
-        "gap": {
-          "default": { "value": "{spacing.scale.md}" }
-        }
+  "component": {
+    "card": {
+      "background": { "value": "{color.background.elevated}" },
+      "backgroundHover": { "value": "{color.background.surface}" },
+      "border": { "value": "{color.border.default}" },
+      "borderRadius": { "value": "{borderRadius.lg}" },
+      "shadow": { "value": "{shadow.md}" },
+      "shadowHover": { "value": "{shadow.lg}" },
+      "padding": {
+        "sm": { "value": "{spacing.sm}" },
+        "md": { "value": "{spacing.md}" },
+        "lg": { "value": "{spacing.lg}" }
+      },
+      "header": {
+        "background": { "value": "{color.background.muted}" },
+        "text": { "value": "{color.text.primary}" },
+        "padding": { "value": "{spacing.md}" }
+      },
+      "body": {
+        "text": { "value": "{color.text.secondary}" },
+        "padding": { "value": "{spacing.md}" }
+      },
+      "footer": {
+        "background": { "value": "{color.background.muted}" },
+        "border": { "value": "{color.border.muted}" },
+        "padding": { "value": "{spacing.md}" }
       }
     }
   }

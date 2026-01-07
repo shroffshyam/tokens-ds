@@ -1,31 +1,247 @@
-const StyleDictionary = require('style-dictionary');
+/**
+ * Hierarchical Design Token Build Script
+ * 
+ * Builds design tokens for all 4 themes:
+ * - classic-light
+ * - classic-dark
+ * - advance-light
+ * - advance-dark
+ * 
+ * Generates outputs for Web (CSS), Android (XML), and iOS (Swift)
+ */
+
 const fs = require('fs');
 const path = require('path');
 
-// Theme configurations
-const themes = [
-  { name: 'classic-light', themeFile: 'tokens/foundation/theme-classic-light.json', isDefault: true },
-  { name: 'classic-dark', themeFile: 'tokens/foundation/theme-classic-dark.json', isDefault: false },
-  { name: 'advance-light', themeFile: 'tokens/foundation/theme-advance-light.json', isDefault: false },
-  { name: 'advance-dark', themeFile: 'tokens/foundation/theme-advance-dark.json', isDefault: false }
-];
+// Configuration
+const TOKENS_DIR = './tokens';
+const BUILD_DIR = './build';
+const THEMES = ['classic-light', 'classic-dark', 'advance-light', 'advance-dark'];
 
 // Ensure build directories exist
-['build/web', 'build/android', 'build/ios'].forEach(dir => {
+['web', 'android', 'ios'].forEach(platform => {
+  const dir = path.join(BUILD_DIR, platform);
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 });
 
-// Helper to convert hex to Android ARGB format
+/**
+ * Recursively load all JSON files from a directory
+ */
+function loadJsonFiles(dir) {
+  let tokens = {};
+  
+  if (!fs.existsSync(dir)) return tokens;
+  
+  const items = fs.readdirSync(dir, { withFileTypes: true });
+  
+  for (const item of items) {
+    const fullPath = path.join(dir, item.name);
+    
+    if (item.isDirectory()) {
+      const subTokens = loadJsonFiles(fullPath);
+      tokens = deepMerge(tokens, subTokens);
+    } else if (item.name.endsWith('.json')) {
+      const content = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
+      tokens = deepMerge(tokens, content);
+    }
+  }
+  
+  return tokens;
+}
+
+/**
+ * Deep merge two objects
+ */
+function deepMerge(target, source) {
+  const result = { ...target };
+  
+  for (const key in source) {
+    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      if (source[key].value !== undefined) {
+        // This is a token (has value property)
+        result[key] = source[key];
+      } else {
+        // This is a nested object
+        result[key] = deepMerge(result[key] || {}, source[key]);
+      }
+    } else {
+      result[key] = source[key];
+    }
+  }
+  
+  return result;
+}
+
+/**
+ * Load tokens for a specific theme
+ */
+function loadThemeTokens(theme) {
+  // Load shared tokens
+  const rawColors = loadJsonFiles(path.join(TOKENS_DIR, 'color'));
+  const spacing = loadJsonFiles(path.join(TOKENS_DIR, 'foundation'));
+  const components = loadJsonFiles(path.join(TOKENS_DIR, 'components'));
+  
+  // Start with raw colors and spacing
+  let tokens = deepMerge({}, rawColors);
+  
+  // Load spacing (but not theme files)
+  const spacingFile = path.join(TOKENS_DIR, 'foundation', 'spacing.json');
+  if (fs.existsSync(spacingFile)) {
+    const spacingTokens = JSON.parse(fs.readFileSync(spacingFile, 'utf8'));
+    tokens = deepMerge(tokens, spacingTokens);
+  }
+  
+  // Load theme-specific tokens
+  const themeFile = path.join(TOKENS_DIR, 'foundation', `theme-${theme}.json`);
+  if (fs.existsSync(themeFile)) {
+    const themeTokens = JSON.parse(fs.readFileSync(themeFile, 'utf8'));
+    tokens = deepMerge(tokens, themeTokens);
+  }
+  
+  // Load component tokens
+  tokens = deepMerge(tokens, components);
+  
+  return tokens;
+}
+
+/**
+ * Flatten nested tokens into a flat map with dot-notation keys
+ */
+function flattenTokens(obj, prefix = '') {
+  const result = {};
+  
+  for (const key in obj) {
+    const newKey = prefix ? `${prefix}.${key}` : key;
+    const value = obj[key];
+    
+    if (value && typeof value === 'object') {
+      if (value.value !== undefined) {
+        // This is a token
+        result[newKey] = value;
+      } else {
+        // This is a nested object
+        Object.assign(result, flattenTokens(value, newKey));
+      }
+    }
+  }
+  
+  return result;
+}
+
+/**
+ * Resolve token references like {color.rawColors.blue.500} to final values
+ */
+function resolveReference(value, flatTokens, seen = new Set()) {
+  if (typeof value !== 'string') return value;
+  if (!value.includes('{')) return value;
+  
+  // Handle references like {color.rawColors.blue.500}
+  return value.replace(/\{([^}]+)\}/g, (match, refPath) => {
+    if (seen.has(refPath)) {
+      console.warn(`Circular reference detected: ${refPath}`);
+      return match;
+    }
+    
+    const token = flatTokens[refPath];
+    if (token && token.value !== undefined) {
+      const newSeen = new Set(seen);
+      newSeen.add(refPath);
+      return resolveReference(token.value, flatTokens, newSeen);
+    }
+    
+    // Return unresolved reference
+    return match;
+  });
+}
+
+/**
+ * Convert token references to CSS variable references
+ * e.g., {color.border.default} → var(--color-border-default)
+ * Only converts the first level of reference (doesn't resolve the chain)
+ */
+function toCSSSyntax(value, flatTokens) {
+  if (typeof value !== 'string') return value;
+  if (!value.includes('{')) return value;
+  
+  return value.replace(/\{([^}]+)\}/g, (match, refPath) => {
+    // Check if this reference exists
+    const token = flatTokens[refPath];
+    if (token) {
+      // Convert to CSS var() syntax
+      return `var(--${refPath.replace(/\./g, '-')})`;
+    }
+    // If reference doesn't exist, try to resolve it
+    return resolveReference(match, flatTokens);
+  });
+}
+
+/**
+ * Resolve all token values
+ */
+function resolveTokens(flatTokens) {
+  const resolved = {};
+  
+  for (const [key, token] of Object.entries(flatTokens)) {
+    resolved[key] = {
+      ...token,
+      // CSS value preserves references as var()
+      cssValue: toCSSSyntax(token.value, flatTokens),
+      // Resolved value is the final computed value (for Android/iOS)
+      resolvedValue: resolveReference(token.value, flatTokens)
+    };
+  }
+  
+  return resolved;
+}
+
+/**
+ * Convert token path to CSS variable name
+ */
+function toCSSVarName(tokenPath) {
+  return `--${tokenPath.replace(/\./g, '-')}`;
+}
+
+/**
+ * Convert token path to Android resource name
+ */
+function toAndroidResourceName(tokenPath) {
+  return tokenPath.replace(/\./g, '_');
+}
+
+/**
+ * Convert token path to Swift property name
+ */
+function toSwiftPropertyName(tokenPath) {
+  return tokenPath
+    .split('.')
+    .map((part, i) => i === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+}
+
+/**
+ * Check if value is a color
+ */
+function isColor(value) {
+  if (typeof value !== 'string') return false;
+  return value.startsWith('#') || value.startsWith('rgb') || value === 'transparent';
+}
+
+/**
+ * Convert hex to Android ARGB format
+ */
 function hexToAndroidColor(hex) {
-  if (!hex || typeof hex !== 'string') return hex;
+  if (hex === 'transparent') return '#00000000';
+  if (!hex || typeof hex !== 'string') return null;
+  
   if (hex.startsWith('#')) {
     const color = hex.slice(1).toUpperCase();
     if (color.length === 6) return `#FF${color}`;
     if (color.length === 8) return `#${color}`;
-    return hex;
+    return hex.toUpperCase();
   }
+  
   if (hex.startsWith('rgba')) {
     const match = hex.match(/rgba?\(([^)]+)\)/);
     if (match) {
@@ -37,12 +253,20 @@ function hexToAndroidColor(hex) {
       return `#${a}${r}${g}${b}`.toUpperCase();
     }
   }
-  return hex;
+  
+  return null;
 }
 
-// Helper to convert hex to iOS UIColor format
+/**
+ * Convert hex to iOS UIColor format
+ */
 function hexToUIColor(hex) {
+  if (hex === 'transparent') {
+    return 'UIColor.clear';
+  }
+  
   if (!hex || typeof hex !== 'string') return null;
+  
   if (hex.startsWith('#')) {
     const color = hex.slice(1);
     const r = parseInt(color.slice(0, 2), 16) / 255;
@@ -51,6 +275,7 @@ function hexToUIColor(hex) {
     const a = color.length === 8 ? parseInt(color.slice(6, 8), 16) / 255 : 1;
     return `UIColor(red: ${r.toFixed(3)}, green: ${g.toFixed(3)}, blue: ${b.toFixed(3)}, alpha: ${a.toFixed(3)})`;
   }
+  
   if (hex.startsWith('rgba')) {
     const match = hex.match(/rgba?\(([^)]+)\)/);
     if (match) {
@@ -62,242 +287,302 @@ function hexToUIColor(hex) {
       return `UIColor(red: ${r.toFixed(3)}, green: ${g.toFixed(3)}, blue: ${b.toFixed(3)}, alpha: ${a.toFixed(3)})`;
     }
   }
+  
   return null;
 }
 
-// Build CSS variables map for reference resolution
-function buildCSSVarMap(tokens) {
-  const map = new Map();
-  tokens.forEach(token => {
-    const tokenPath = token.path.join('.');
-    const prefix = token.path[0] === 'color' ? 'color' :
-                   token.path[0] === 'spacing' ? 'spacing' :
-                   token.path[0] === 'typography' ? 'typography' :
-                   token.path[0] === 'border' ? 'border' :
-                   token.path[0] === 'shadow' ? 'shadow' : token.path[0];
-    const name = token.path.slice(1).join('-');
-    map.set(tokenPath, `--${prefix}-${name}`);
-  });
-  return map;
+/**
+ * Generate CSS for a theme
+ * Uses cssValue which preserves references as var() for component tokens
+ */
+function generateThemeCSS(resolvedTokens, theme, isDefault = false) {
+  const lines = [];
+  const selector = isDefault 
+    ? `:root, [data-theme="${theme}"]`
+    : `[data-theme="${theme}"]`;
+  
+  lines.push(`${selector} {`);
+  
+  // Sort by token path
+  const sorted = Object.entries(resolvedTokens).sort(([a], [b]) => a.localeCompare(b));
+  
+  for (const [path, token] of sorted) {
+    // Use cssValue for CSS output (preserves var() references)
+    const value = token.cssValue;
+    if (value && typeof value === 'string') {
+      lines.push(`  ${toCSSVarName(path)}: ${value};`);
+    }
+  }
+  
+  lines.push('}');
+  return lines.join('\n');
 }
 
-// Get CSS value with reference resolution
-function getCSSValue(token, varMap) {
-  if (token.original && token.original.value) {
-    const originalValue = token.original.value;
-    if (typeof originalValue === 'string' && originalValue.startsWith('{') && originalValue.endsWith('}')) {
-      const refPath = originalValue.slice(1, -1);
-      const cssVar = varMap.get(refPath);
-      if (cssVar) {
-        return `var(${cssVar})`;
+/**
+ * Generate Android colors.xml for a theme
+ */
+function generateAndroidColors(resolvedTokens, theme) {
+  const lines = [];
+  lines.push('<?xml version="1.0" encoding="UTF-8"?>');
+  lines.push('');
+  lines.push('<!--');
+  lines.push(`  Design Tokens - ${theme} theme`);
+  lines.push(`  Generated on ${new Date().toUTCString()}`);
+  lines.push('-->');
+  lines.push('<resources>');
+  
+  const sorted = Object.entries(resolvedTokens).sort(([a], [b]) => a.localeCompare(b));
+  
+  for (const [path, token] of sorted) {
+    const value = token.resolvedValue;
+    if (isColor(value)) {
+      const androidColor = hexToAndroidColor(value);
+      if (androidColor) {
+        const resourceName = toAndroidResourceName(path);
+        lines.push(`  <color name="${resourceName}">${androidColor}</color>`);
       }
     }
   }
-  return token.value;
+  
+  lines.push('</resources>');
+  return lines.join('\n');
 }
 
-// Flatten nested token object to array of tokens
-function flattenTokens(obj, path = []) {
-  let tokens = [];
-  for (const key in obj) {
-    if (obj[key] && obj[key].value !== undefined) {
-      tokens.push({ 
-        path: [...path, key], 
-        value: obj[key].value, 
-        original: obj[key].original || obj[key]
-      });
-    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-      tokens = tokens.concat(flattenTokens(obj[key], [...path, key]));
+/**
+ * Generate Android dimens.xml (shared across themes)
+ */
+function generateAndroidDimens(resolvedTokens) {
+  const lines = [];
+  lines.push('<?xml version="1.0" encoding="UTF-8"?>');
+  lines.push('');
+  lines.push('<!--');
+  lines.push('  Design Tokens - Dimensions');
+  lines.push(`  Generated on ${new Date().toUTCString()}`);
+  lines.push('-->');
+  lines.push('<resources>');
+  
+  const sorted = Object.entries(resolvedTokens).sort(([a], [b]) => a.localeCompare(b));
+  
+  for (const [path, token] of sorted) {
+    const value = token.resolvedValue;
+    if (typeof value === 'string' && value.endsWith('px')) {
+      const resourceName = toAndroidResourceName(path);
+      const dpValue = value.replace('px', 'dp');
+      lines.push(`  <dimen name="${resourceName}">${dpValue}</dimen>`);
     }
   }
-  return tokens;
+  
+  lines.push('</resources>');
+  return lines.join('\n');
 }
 
-// Process each theme
-const cssOutputs = [];
-const androidOutputs = {};
-const iosOutputs = {};
-
-themes.forEach(theme => {
-  console.log(`\nProcessing theme: ${theme.name}`);
+/**
+ * Generate Android font dimens (shared across themes)
+ */
+function generateAndroidFontDimens(resolvedTokens) {
+  const lines = [];
+  lines.push('<?xml version="1.0" encoding="UTF-8"?>');
+  lines.push('');
+  lines.push('<!--');
+  lines.push('  Design Tokens - Font Dimensions');
+  lines.push(`  Generated on ${new Date().toUTCString()}`);
+  lines.push('-->');
+  lines.push('<resources>');
   
-  // Create Style Dictionary instance for this theme
-  const SD = StyleDictionary.extend({
-    source: [
-      'tokens/color/rawColors.json',
-      'tokens/foundation/spacing.json',
-      theme.themeFile,
-      'tokens/components/**/*.json'
-    ],
-    platforms: {
-      temp: {
-        transformGroup: 'css',
-        buildPath: 'build/temp/',
-        files: []
+  const sorted = Object.entries(resolvedTokens).sort(([a], [b]) => a.localeCompare(b));
+  
+  for (const [path, token] of sorted) {
+    const value = token.resolvedValue;
+    if (path.includes('fontSize') && typeof value === 'string' && value.endsWith('px')) {
+      const resourceName = toAndroidResourceName(path);
+      const spValue = value.replace('px', 'sp');
+      lines.push(`  <dimen name="${resourceName}">${spValue}</dimen>`);
+    }
+  }
+  
+  lines.push('</resources>');
+  return lines.join('\n');
+}
+
+/**
+ * Generate iOS Swift file for a theme
+ */
+function generateSwiftColors(resolvedTokens, theme) {
+  const className = `StyleDictionaryColor${theme.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('')}`;
+  const lines = [];
+  
+  lines.push('//');
+  lines.push(`// ${className}.swift`);
+  lines.push('//');
+  lines.push('');
+  lines.push('// Design Tokens - Color definitions');
+  lines.push(`// Theme: ${theme}`);
+  lines.push(`// Generated on ${new Date().toUTCString()}`);
+  lines.push('');
+  lines.push('import UIKit');
+  lines.push('');
+  lines.push(`public class ${className} {`);
+  
+  const sorted = Object.entries(resolvedTokens).sort(([a], [b]) => a.localeCompare(b));
+  
+  for (const [path, token] of sorted) {
+    const value = token.resolvedValue;
+    if (isColor(value)) {
+      const uiColor = hexToUIColor(value);
+      if (uiColor) {
+        const propertyName = toSwiftPropertyName(path);
+        lines.push(`    public static let ${propertyName} = ${uiColor}`);
       }
     }
-  });
+  }
+  
+  lines.push('}');
+  return lines.join('\n');
+}
 
-  // Get all tokens for this theme - exportPlatform returns nested object, need to flatten
-  const tokenDict = SD.exportPlatform('temp');
-  const allTokens = flattenTokens(tokenDict);
+/**
+ * Generate shared iOS Swift file
+ */
+function generateSwiftShared(resolvedTokens) {
+  const lines = [];
   
-  console.log(`  Found ${allTokens.length} tokens`);
+  lines.push('//');
+  lines.push('// StyleDictionary.swift');
+  lines.push('//');
+  lines.push('');
+  lines.push('// Design Tokens - Shared values');
+  lines.push(`// Generated on ${new Date().toUTCString()}`);
+  lines.push('');
+  lines.push('import CoreGraphics');
+  lines.push('');
+  lines.push('public class StyleDictionary {');
   
-  // Build CSS var map
-  const varMap = buildCSSVarMap(allTokens);
+  const sorted = Object.entries(resolvedTokens).sort(([a], [b]) => a.localeCompare(b));
   
-  // Filter tokens by category
-  const rawColors = allTokens.filter(t => t.path[0] === 'color' && t.path[1] === 'rawColors');
-  const foundationTokens = allTokens.filter(t => {
-    return !(t.path[0] === 'color' && t.path[1] === 'rawColors') &&
-           !(t.path[0] === 'color' && t.path[1] === 'component') &&
-           !(t.path[0] === 'spacing' && t.path[1] === 'component');
-  });
-  const componentTokens = allTokens.filter(t => 
-    (t.path[0] === 'color' && t.path[1] === 'component') ||
-    (t.path[0] === 'spacing' && t.path[1] === 'component')
-  );
-  const colorTokens = allTokens.filter(t => t.path[0] === 'color');
+  // Dimensions
+  for (const [path, token] of sorted) {
+    const value = token.resolvedValue;
+    if (typeof value === 'string' && value.endsWith('px') && !path.includes('fontSize')) {
+      const propertyName = toSwiftPropertyName(path);
+      const numValue = parseFloat(value);
+      lines.push(`    public static let ${propertyName}: CGFloat = ${numValue}`);
+    }
+  }
   
-  console.log(`  Raw colors: ${rawColors.length}, Foundation: ${foundationTokens.length}, Components: ${componentTokens.length}`);
+  lines.push('}');
+  return lines.join('\n');
+}
 
-  // Generate CSS for this theme
+/**
+ * Main build function
+ */
+function build() {
+  console.log('🎨 Building Hierarchical Design Tokens...\n');
+  console.log(`📦 Themes: ${THEMES.join(', ')}\n`);
+  
+  // Build each theme
+  const themeOutputs = {};
+  
+  for (const theme of THEMES) {
+    console.log(`\n🔧 Processing ${theme}...`);
+    
+    const tokens = loadThemeTokens(theme);
+    const flatTokens = flattenTokens(tokens);
+    const resolvedTokens = resolveTokens(flatTokens);
+    
+    themeOutputs[theme] = resolvedTokens;
+    
+    console.log(`   Found ${Object.keys(resolvedTokens).length} tokens`);
+  }
+  
+  // Generate Web CSS
+  console.log('\n📄 Generating Web (CSS)...');
   const cssLines = [];
-  const selector = theme.isDefault ? '[data-theme="classic-light"],\n:root' : `[data-theme="${theme.name}"]`;
   
-  cssLines.push(`${selector} {`);
-  cssLines.push(`  /* ============================================`);
-  cssLines.push(`   * ${theme.name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Theme`);
-  cssLines.push(`   * ============================================ */`);
-  cssLines.push('');
-  
-  // Add raw colors (only for first/default theme)
-  if (theme.isDefault) {
-    rawColors.sort((a, b) => a.path.join('.').localeCompare(b.path.join('.'))).forEach(token => {
-      const name = token.path.slice(1).join('-');
-      cssLines.push(`  --color-${name}: ${token.value};`);
-    });
-    cssLines.push('');
-  }
-  
-  // Add foundation tokens
-  foundationTokens.sort((a, b) => a.path.join('.').localeCompare(b.path.join('.'))).forEach(token => {
-    const prefix = token.path[0];
-    const name = token.path.slice(1).join('-');
-    const value = getCSSValue(token, varMap);
-    cssLines.push(`  --${prefix}-${name}: ${value};`);
-  });
-  
-  // Add component tokens (only for first/default theme since they reference foundation)
-  if (theme.isDefault && componentTokens.length > 0) {
-    cssLines.push('');
-    cssLines.push('  /* Component Tokens */');
-    componentTokens.sort((a, b) => a.path.join('.').localeCompare(b.path.join('.'))).forEach(token => {
-      const prefix = token.path[0];
-      const name = token.path.slice(1).join('-');
-      const value = getCSSValue(token, varMap);
-      cssLines.push(`  --${prefix}-${name}: ${value};`);
-    });
-  }
-  
-  cssLines.push('}');
-  cssLines.push('');
-  
-  cssOutputs.push(cssLines.join('\n'));
-
-  // Generate Android colors.xml for this theme
-  const androidLines = [];
-  androidLines.push('<?xml version="1.0" encoding="UTF-8"?>');
-  androidLines.push('');
-  androidLines.push('<!--');
-  androidLines.push('  Do not edit directly');
-  androidLines.push(`  Generated on ${new Date().toUTCString()}`);
-  androidLines.push(`  Theme: ${theme.name}`);
-  androidLines.push('-->');
-  androidLines.push('<resources>');
-  
-  colorTokens.forEach(token => {
-    const name = token.path.join('_').toLowerCase().replace(/-/g, '_');
-    const value = hexToAndroidColor(token.value);
-    if (value && !value.includes('var(') && !value.includes('rgba')) {
-      androidLines.push(`  <color name="${name}">${value}</color>`);
-    }
-  });
-  
-  androidLines.push('</resources>');
-  androidOutputs[theme.name] = androidLines.join('\n');
-
-  // Generate iOS Swift for this theme
-  const iosLines = [];
-  const className = 'StyleDictionaryColor' + theme.name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
-  
-  iosLines.push('//');
-  iosLines.push(`// ${className}.swift`);
-  iosLines.push('//');
-  iosLines.push('');
-  iosLines.push('// Do not edit directly');
-  iosLines.push(`// Generated on ${new Date().toUTCString()}`);
-  iosLines.push(`// Theme: ${theme.name}`);
-  iosLines.push('');
-  iosLines.push('import UIKit');
-  iosLines.push('');
-  iosLines.push(`public class ${className} {`);
-  
-  colorTokens.forEach(token => {
-    const name = token.path.map((p, i) => i === 0 ? p : p.charAt(0).toUpperCase() + p.slice(1)).join('');
-    const value = hexToUIColor(token.value);
-    if (value) {
-      iosLines.push(`    public static let ${name} = ${value}`);
-    }
-  });
-  
-  iosLines.push('}');
-  iosOutputs[theme.name] = iosLines.join('\n');
-});
-
-// Write combined CSS file
-const cssHeader = `/**
- * Do not edit directly
+  cssLines.push(`/**
+ * Design Tokens
  * Generated on ${new Date().toUTCString()}
  * 
- * Theme Support: Use data-theme="classic-light", "classic-dark", "advance-light", "advance-dark" on html/body
- * Default theme is classic-light
+ * Themes: ${THEMES.join(', ')}
  */
-
-`;
-
-fs.writeFileSync('build/web/tokens.css', cssHeader + cssOutputs.join('\n'), 'utf8');
-console.log('\n✓ Generated build/web/tokens.css');
-
-// Write Android files
-Object.entries(androidOutputs).forEach(([themeName, content]) => {
-  const filename = themeName === 'classic-light' ? 'colors.xml' : `colors-${themeName}.xml`;
-  fs.writeFileSync(`build/android/${filename}`, content, 'utf8');
-  console.log(`✓ Generated build/android/${filename}`);
-});
-
-// Write iOS files
-Object.entries(iosOutputs).forEach(([themeName, content]) => {
-  const className = 'StyleDictionaryColor' + themeName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
-  const filename = `${className}.swift`;
-  fs.writeFileSync(`build/ios/${filename}`, content, 'utf8');
-  console.log(`✓ Generated build/ios/${filename}`);
-});
-
-// Generate a combined JSON file
-const SD = StyleDictionary.extend({
-  source: ['tokens/**/*.json'],
-  platforms: {
-    json: {
-      transformGroup: 'js',
-      buildPath: 'build/web/',
-      files: [{ destination: 'tokens.json', format: 'json/nested' }]
+`);
+  
+  THEMES.forEach((theme, index) => {
+    const isDefault = index === 0; // classic-light is default
+    cssLines.push(generateThemeCSS(themeOutputs[theme], theme, isDefault));
+    cssLines.push('');
+  });
+  
+  fs.writeFileSync(path.join(BUILD_DIR, 'web', 'tokens.css'), cssLines.join('\n'), 'utf8');
+  console.log('  ✓ build/web/tokens.css');
+  
+  // Generate JSON
+  const jsonOutput = {};
+  for (const theme of THEMES) {
+    jsonOutput[theme] = {};
+    for (const [path, token] of Object.entries(themeOutputs[theme])) {
+      jsonOutput[theme][path] = {
+        value: token.value,
+        resolvedValue: token.resolvedValue
+      };
     }
   }
-});
-SD.buildPlatform('json');
-console.log('✓ Generated build/web/tokens.json');
+  fs.writeFileSync(path.join(BUILD_DIR, 'web', 'tokens.json'), JSON.stringify(jsonOutput, null, 2), 'utf8');
+  console.log('  ✓ build/web/tokens.json');
+  
+  // Generate Android files
+  console.log('\n📱 Generating Android (XML)...');
+  
+  THEMES.forEach(theme => {
+    const filename = theme === 'classic-light' ? 'colors.xml' : `colors-${theme}.xml`;
+    fs.writeFileSync(
+      path.join(BUILD_DIR, 'android', filename),
+      generateAndroidColors(themeOutputs[theme], theme),
+      'utf8'
+    );
+    console.log(`  ✓ build/android/${filename}`);
+  });
+  
+  // Generate shared dimens (from classic-light as base)
+  fs.writeFileSync(
+    path.join(BUILD_DIR, 'android', 'dimens.xml'),
+    generateAndroidDimens(themeOutputs['classic-light']),
+    'utf8'
+  );
+  console.log('  ✓ build/android/dimens.xml');
+  
+  fs.writeFileSync(
+    path.join(BUILD_DIR, 'android', 'font_dimens.xml'),
+    generateAndroidFontDimens(themeOutputs['classic-light']),
+    'utf8'
+  );
+  console.log('  ✓ build/android/font_dimens.xml');
+  
+  // Generate iOS files
+  console.log('\n🍎 Generating iOS (Swift)...');
+  
+  THEMES.forEach(theme => {
+    const className = `StyleDictionaryColor${theme.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('')}`;
+    fs.writeFileSync(
+      path.join(BUILD_DIR, 'ios', `${className}.swift`),
+      generateSwiftColors(themeOutputs[theme], theme),
+      'utf8'
+    );
+    console.log(`  ✓ build/ios/${className}.swift`);
+  });
+  
+  fs.writeFileSync(
+    path.join(BUILD_DIR, 'ios', 'StyleDictionary.swift'),
+    generateSwiftShared(themeOutputs['classic-light']),
+    'utf8'
+  );
+  console.log('  ✓ build/ios/StyleDictionary.swift');
+  
+  console.log('\n✅ Build complete!');
+  console.log(`\n📊 Summary:`);
+  console.log(`   Themes built: ${THEMES.length}`);
+  console.log(`   Tokens per theme: ~${Object.keys(themeOutputs['classic-light']).length}`);
+}
 
-console.log('\n✅ Build complete!');
-
+// Run build
+build();

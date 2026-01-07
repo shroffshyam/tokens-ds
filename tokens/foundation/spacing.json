@@ -1,44 +1,36 @@
 {
   "spacing": {
-    "component": {
-      "button": {
-        "padding-x": { "value": "{spacing.scale.md}" },
-        "padding-y": { "value": "{spacing.scale.sm}" },
-        "gap": { "value": "{spacing.scale.sm}" }
-      },
-      "input": {
-        "padding-x": { "value": "{spacing.scale.md}" },
-        "padding-y": { "value": "{spacing.scale.sm}" },
-        "gap": { "value": "{spacing.scale.sm}" }
-      },
-      "card": {
-        "padding": { "value": "{spacing.scale.lg}" },
-        "gap": { "value": "{spacing.scale.md}" }
-      }
-    },
-    "layout": {
-      "page": {
-        "padding": { "value": "{spacing.scale.xl}" },
-        "margin": { "value": "{spacing.scale.lg}" }
-      },
-      "section": {
-        "margin-bottom": { "value": "{spacing.scale.xl}" },
-        "gap": { "value": "{spacing.scale.lg}" }
-      },
-      "container": {
-        "max-width": { "value": "1200px" },
-        "padding": { "value": "{spacing.scale.lg}" }
-      }
-    },
-    "scale": {
-      "xs": { "value": "4px" },
-      "sm": { "value": "8px" },
-      "md": { "value": "16px" },
-      "lg": { "value": "24px" },
-      "xl": { "value": "32px" },
-      "2xl": { "value": "48px" },
-      "3xl": { "value": "64px" },
-      "4xl": { "value": "96px" }
-    }
+    "none": { "value": "0" },
+    "xxs": { "value": "2px" },
+    "xs": { "value": "4px" },
+    "sm": { "value": "8px" },
+    "md": { "value": "16px" },
+    "lg": { "value": "24px" },
+    "xl": { "value": "32px" },
+    "xxl": { "value": "48px" },
+    "xxxl": { "value": "64px" }
+  },
+  "borderRadius": {
+    "none": { "value": "0" },
+    "sm": { "value": "2px" },
+    "md": { "value": "4px" },
+    "lg": { "value": "8px" },
+    "xl": { "value": "12px" },
+    "xxl": { "value": "16px" },
+    "full": { "value": "9999px" }
+  },
+  "borderWidth": {
+    "none": { "value": "0" },
+    "thin": { "value": "1px" },
+    "medium": { "value": "2px" },
+    "thick": { "value": "4px" }
+  },
+  "shadow": {
+    "none": { "value": "none" },
+    "sm": { "value": "0 1px 2px 0 rgba(0, 0, 0, 0.05)" },
+    "md": { "value": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" },
+    "lg": { "value": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" },
+    "xl": { "value": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }
   }
 }
+
