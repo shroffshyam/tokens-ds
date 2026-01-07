@@ -1,6 +1,6 @@
 # Design System Tokens
 
-A scalable, cross-platform design system tokens project built with [Style Dictionary](https://amzn.github.io/style-dictionary/). This design system serves as the single source of truth for spacing guidelines, font sizing, and colors across iOS, Android, and Web platforms.
+A scalable, cross-platform design system tokens project. This design system serves as the single source of truth for spacing guidelines, font sizing, and colors across iOS, Android, and Web platforms.
 
 **✨ Features:**
 - **Hierarchical Token Structure**: Raw Colors → Foundation → Components with CSS variable references
@@ -47,11 +47,9 @@ The token system follows a three-tier hierarchy that ensures consistency and mai
 
 ```
 tokens-ds/
-├── sd.config.js                # Style Dictionary configuration (JavaScript)
+├── build-themes.js             # Build script for generating platform outputs
 ├── package.json                # Project dependencies and scripts
 ├── token-explorer.html         # Interactive token explorer SPA
-├── examples/                   # Example files
-│   └── theme-demo.html         # Theme demonstration page
 ├── tokens/
 │   ├── color/
 │   │   └── rawColors.json      # All raw color definitions
@@ -93,7 +91,7 @@ npm run explorer
 npm install
 ```
 
-This installs Style Dictionary and the http-server for the Token Explorer.
+This installs the http-server for the Token Explorer.
 
 ### Building Tokens
 
@@ -109,19 +107,12 @@ Build and clean previous outputs:
 npm run build:clean
 ```
 
-Watch mode for development (rebuilds automatically on file changes):
-
-```bash
-npm run watch
-```
-
 ### Available Commands
 
 | Command | Description |
 |---------|-------------|
 | `npm run build` | Build tokens for web, iOS, and Android |
 | `npm run build:clean` | Clean build directory and rebuild |
-| `npm run watch` | Watch for changes and rebuild automatically |
 | `npm run explorer` | Start local server and open Token Explorer |
 
 ### Exploring Tokens
@@ -355,7 +346,7 @@ Create new files in `tokens/components/` for component-specific tokens. Always r
 
 1. **Single Source of Truth**: All design decisions are centralized in token files
 2. **Hierarchical Structure**: Raw → Foundation → Component ensures consistency
-3. **Platform Agnostic**: Tokens are platform-agnostic; Style Dictionary handles platform-specific transformations
+3. **Platform Agnostic**: Tokens are platform-agnostic; the build script handles platform-specific transformations
 4. **Maintainability**: Changes to foundation tokens automatically propagate to components
 5. **Scalability**: Easy to add new tokens, colors, or components without breaking existing structure
 
@@ -369,7 +360,6 @@ Create new files in `tokens/components/` for component-specific tokens. Always r
 
 ## 📚 Resources
 
-- [Style Dictionary Documentation](https://amzn.github.io/style-dictionary/)
 - [Design Tokens Community Group](https://www.designtokens.org/)
 - [W3C Design Tokens Specification](https://tr.designtokens.org/format/)
 
